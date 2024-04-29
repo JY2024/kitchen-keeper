@@ -1,19 +1,15 @@
 import { Navigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
-import api from "../api.js";
+import { jwtDecode } from "jwt-decode";
+import api from "../api";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants";
 import { useState, useEffect } from "react";
+
 
 function ProtectedRoute({ children }) {
     const [isAuthorized, setIsAuthorized] = useState(null);
 
     useEffect(() => {
-        try {
-            auth()
-        } catch (error) {
-            setIsAuthorized(false)
-        }
-        // auth().catch(() => setIsAuthorized(false))
+        auth().catch(() => setIsAuthorized(false))
     }, [])
 
     const refreshToken = async () => {
@@ -29,47 +25,33 @@ function ProtectedRoute({ children }) {
                 setIsAuthorized(false)
             }
         } catch (error) {
-            console.error("Error refreshing token:", error);
+            console.log(error);
             setIsAuthorized(false);
         }
     };
 
     const auth = async () => {
-        try {
-            const token = localStorage.getItem(ACCESS_TOKEN);
-            if (!token) {
-                setIsAuthorized(false);
-                return;
-            }
-            const decoded = jwtDecode(token);
-            const tokenExpiration = decoded.exp;
-            const now = Date.now() / 1000;
-        
-            if (tokenExpiration < now) {
-                try {
-                    await refreshToken();
-                } catch (err) {
-                    console.error("Error refreshing token:", error);
-                }
-
-            } else {
-                setIsAuthorized(true);
-            }
+        const token = localStorage.getItem(ACCESS_TOKEN);
+        if (!token) {
+            setIsAuthorized(false);
+            return;
         }
-        catch (error) {
-            console.error("Error refreshing token:", error);
+        const decoded = jwtDecode(token);
+        const tokenExpiration = decoded.exp;
+        const now = Date.now() / 1000;
+
+        if (tokenExpiration < now) {
+            await refreshToken();
+        } else {
+            setIsAuthorized(true);
         }
     };
 
     if (isAuthorized === null) {
         return <div>Loading...</div>;
     }
-    if (isAuthorized) {
-        return children;
-    }
-    else {
-        return <Navigate to="/login" />;
-    }
+
+    return isAuthorized ? children : <Navigate to="/login" />;
 }
 
 export default ProtectedRoute;
