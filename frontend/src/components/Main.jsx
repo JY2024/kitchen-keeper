@@ -18,7 +18,8 @@ const Main = () => {
     { id: 2, value: 15, label: "Fruits", color: "#c01f25" },
     { id: 3, value: 20, label: "Dairy", color: "#08629a" },
     { id: 4, value: 25, label: "Meat", color: "#6b2c91" },
-    { id: 5, value: 30, label: "Honey", color: "#e96d1e" },
+    { id: 5, value: 30, label: "Drinks", color: "#00FFFF" },
+    { id: 6, value: 35, label: "Other", color: "#e96d1e" },
   ];
 
   const [foodChartDisplay, setFoodChartDisplay] = useState(false);

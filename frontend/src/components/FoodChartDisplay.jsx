@@ -19,6 +19,7 @@ const FoodChartDisplay = ({ foodItems }) => {
       margin="auto"
       paddingTop="2rem"
       backgroundColor="#F4F5FA"
+      sx={{ "&:hover": {backgroundColor: "#eaebf0",  } }}
     >
       <Box className="food-chart-header">
         <Typography variant="h6" align="center" mr={3}>
@@ -27,7 +28,10 @@ const FoodChartDisplay = ({ foodItems }) => {
       </Box>
       <Box className="food-chart-div">
         <PieChart
-          sx={{ marginTop: 3, marginLeft: 8 }}
+          sx={{
+            marginTop: 3,
+            marginLeft: 8,
+          }}
           onItemClick={(e) => handleClick(e)}
           series={[
             {
