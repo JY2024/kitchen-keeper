@@ -36,7 +36,7 @@ const Main = () => {
       return;
     }
 
-    const pid = 3;
+    const pid = 1;
     let url = `http://localhost:4000/food/${pid}`;
 
     let res = await fetch(url, {
