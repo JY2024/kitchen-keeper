@@ -8,11 +8,7 @@ const useGetUserIngredients = (url) => {
   useEffect(() => {
     const abortController = new AbortController();
 
-    if (
-      url === undefined ||
-      typeof url !== "string" ||
-      url.trim().length === 0
-    ) {
+    if (url === undefined || typeof url !== "string" || url.trim().length === 0) {
       console.log("please provide a valid url");
       return { error: "please provide a valid url" };
     } else {
@@ -30,6 +26,9 @@ const useGetUserIngredients = (url) => {
           );
 
           let resJson = await res.json();
+          
+          console.log(resJson);
+
           setData(resJson);
           setIsPending(false);
           setError(null);

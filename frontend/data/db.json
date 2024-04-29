@@ -1,3 +1,47 @@
 {
-    
+    "food": [
+        {
+            "id": 1,
+            "fid": "abc",
+            "name": "Milk",
+            "group": "dairy",
+            "exp_date": "05.01.2024",
+            "quantity": 4
+        },
+
+        {
+            "id": 2,
+            "fid": "bcd",
+            "name": "Steak",
+            "group": "Meat",
+            "exp_date": "06.01.2024",
+            "quantity": 2
+        },
+        {
+            "id": 3,
+            "fid": "cde",
+            "name": "Broccoli",
+            "group": "Vegetable",
+            "exp_date": "07.01.2024",
+            "quantity": 3
+        },
+
+        {
+            "id": 1,
+            "fid": "abc",
+            "name": "Blueberries",
+            "group": "Fruit",
+            "exp_date": "08.01.2024",
+            "quantity": 30
+        },
+
+        {
+            "id": 2,
+            "fid": "bcd",
+            "name": "Steak",
+            "group": "Grains",
+            "exp_date": "09.01.2024",
+            "quantity": 2
+        }
+    ]
 }
