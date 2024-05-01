@@ -32,7 +32,7 @@ class NoteListCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Note.objects.filter(author=user)
+        return Note.objects
     
     def perform_create(self, serializer):
         if serializer.is_valid():
