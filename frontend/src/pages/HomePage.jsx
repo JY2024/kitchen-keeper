@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import Navbar from "../components/Navbar.jsx";
+import Main from "../components/Main.jsx";
 
 // fix import here.
 // import Main from "./Main.jsx";
@@ -9,7 +10,7 @@ const HomePage = () => {
     <Box className="home-page">
       <Navbar />
       <h1>Hello!</h1>
-      {/* <Main /> */}
+      <Main />
     </Box>
   );
 };
