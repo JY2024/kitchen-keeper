@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from django.core.validators import MinLengthValidator, EmailValidator
 
 # Create your models here.
 class KitchenKeeper(models.Model):
@@ -21,13 +23,30 @@ class Note(models.Model):
         return self.title
     
 class Setting(models.Model):
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('non_binary', 'Non-Binary'),
+        ('transgender_male', 'Transgender Male'),
+        ('transgender_female', 'Transgender Female'),
+        ('other', 'Other'),
+    ]
+    SEX_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('intersex', 'Intersex'),
+        ('non_binary', 'Non-Binary'),
+        ('other', 'Other'),
+    ]
+
     name = models.CharField(max_length=100)
     bio = models.TextField()
-    gender = models.CharField(max_length=100)
-    sex = models.CharField(max_length=100)
+    gender = models.CharField(max_length=20, choices=GENDER_CHOICES)
+    sex = models.CharField(max_length=20, choices=SEX_CHOICES)
     username = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100, validators=[EmailValidator()])
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="settings")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

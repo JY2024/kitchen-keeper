@@ -51,7 +51,7 @@ function Form({ route, method }) {
       />
       {loading && <LoadingIndicator />}
       <button className="form-button" type="submit">
-        {name}
+        {name} 
       </button>
     </form>
   );

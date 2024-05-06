@@ -55,7 +55,15 @@ function SettingPage() {
       <div>
         <h2>Setting</h2>
         {settings.map((setting) => (
-          <Setting setting={setting} onDelete={deleteSetting} key={setting.id} />
+          <div className="setting" key={setting.id}>
+          <p>Name: {setting.name}</p>
+          <p>Bio: {setting.bio}</p>
+          <p>Gender: {setting.gender}</p>
+          <p>Sex: {setting.sex}</p>
+          <p>Username: {setting.username}</p>
+          <p>Email: {setting.email}</p>
+          <button onClick={() => deleteSetting(setting.id)}>Delete</button>
+        </div>
         ))}
       </div>
       <h2>Create a Setting</h2>

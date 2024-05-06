@@ -57,9 +57,15 @@ class SettingCreate(generics.ListCreateAPIView):
     serializer_class = SettingSerializer
     permission_classes = [IsAuthenticated]
 
+    #def get_queryset(self):
+    #    user = self.request.user
+    #    return Setting.objects.filter(author=user)
+    
     def get_queryset(self):
         user = self.request.user
-        return Setting.objects.filter(author=user)[-1]
+        latest_setting = Setting.objects.filter(author=user).order_by('created_at').last()
+        return [latest_setting] if latest_setting else []
+        
     
     def perform_create(self, serializer):
         if serializer.is_valid():
