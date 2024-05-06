@@ -1,8 +1,6 @@
 import React from 'react';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
+import {TextField, IconButton, Typography} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import Typography from '@mui/material/Typography';
 
 function SearchBar({ onChange, onClick }) {
     return (

@@ -7,6 +7,9 @@ import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import SocialPage from "./pages/SocialPage"
 import ProtectedRoute from "./components/ProtectedRoute"
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 
 function Logout() {
   localStorage.clear()
