@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 import Setting from "../components/Setting"
+import "../styles/Setting.css"
 //import "../styles/Home.css"
 
 function SettingPage() {
@@ -51,17 +52,17 @@ function SettingPage() {
   };
 
   return (
-    <div>
+    <div className="settings-container"> 
       <div>
         <h2>Setting</h2>
         {settings.map((setting) => (
           <div className="setting" key={setting.id}>
-          <p>Name: {setting.name}</p>
-          <p>Bio: {setting.bio}</p>
-          <p>Gender: {setting.gender}</p>
-          <p>Sex: {setting.sex}</p>
-          <p>Username: {setting.username}</p>
-          <p>Email: {setting.email}</p>
+          <p className="setting-text">Name: {setting.name}</p>
+          <p className="setting-text">Bio: {setting.bio}</p>
+          <p className="setting-text">Gender: {setting.gender}</p>
+          <p className="setting-text">Sex: {setting.sex}</p>
+          <p className="setting-text">Username: {setting.username}</p>
+          <p className="setting-text">Email: {setting.email}</p>
           <button onClick={() => deleteSetting(setting.id)}>Delete</button>
         </div>
         ))}
