@@ -19,3 +19,15 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Setting(models.Model):
+    name = models.CharField(max_length=100)
+    bio = models.TextField()
+    gender = models.CharField(max_length=100)
+    sex = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="settings")
+
+    def __str__(self):
+        return self.name
