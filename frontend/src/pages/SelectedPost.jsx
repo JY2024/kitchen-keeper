@@ -3,22 +3,16 @@ import api from "../api";
 import Comment from "../components/Comment";
 
 function SelectedPost() {
+  // function SelectedPost({ post, onDelete }) {
   const [post, setPost] = useState("");
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
+  const formattedDate = new Date(post.created_at).toLocaleDateString("en-US");
 
   useEffect(() => {
-    getPost();
-    getComments();
+    // getComments();
   }, []);
 
-  const getPost = () => {
-    api
-      .get("/api/Post/")
-      .then((res) => res.data)
-      .then((data) => setPost(data))
-      .catch((err) => alert(err));
-  };
   const getComments = () => {
     api
       .get("/api/comments/")
@@ -41,7 +35,7 @@ function SelectedPost() {
   const createComment = (e) => {
     e.preventDefault();
     api
-      .post("/api/comments/", { content, title })
+      .post("/api/comments/", { comment: comment, p_id: post.id })
       .then((res) => {
         if (res.status === 201) alert("Comment created!");
         else alert("Failed to make comment.");
@@ -56,18 +50,19 @@ function SelectedPost() {
       <div>
         <p>{post.title}</p>
         <p>{post.content}</p>
+        <p>{formattedDate}</p>
+        <button onClick={() => onDelete(post.id)}>Delete</button>
       </div>
       <h2>Create a Comment</h2>
-      <form onSubmit={{ createComment }}>
-        <label htmlFor="comment">Write your comment:</label>
+      <form onSubmit={createComment}>
+        <label htmlFor="content">Write your comment:</label>
         <br />
         <textarea
-          type="text"
           id="comment"
           name="comment"
           required
           value={comment}
-          onchange={(e) => setComment(e.target.value)}
+          onChange={(e) => setComment(e.target.value)}
         ></textarea>
         <br />
         <input type="submit" value="Submit"></input>
