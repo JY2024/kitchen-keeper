@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer
+from .serializers import UserSerializer, NoteSerializer, RecipeSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from.models import Note
+from .models import Note, Recipe
 # import view sets from the REST framework
 from rest_framework import viewsets
  
@@ -14,6 +14,37 @@ from .serializers import KitchenKeeperSerializer
 from .models import KitchenKeeper
 
 # Create your views here.
+
+class RecipeCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = NoteSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Recipe.objects
+    
+    def perform_create(self, serializer):
+        print("jdncjknd")
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+# class RecipeCreateAPIView(generics.CreateAPIView):
+#     queryset = Recipe.objects.all()
+#     serializer_class = RecipeSerializer
+
+#     # def perform_create(self, serializer):
+#     #     serializer.save(author=self.request.user)
+#     def perform_create(self, serializer):
+#         if serializer.is_valid():
+#             serializer.save(author=self.request.user)
+#         else:
+#             print(serializer.errors)
+
+class RecipeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
  
 # create a class for the KitchenKeeper model viewsets
 class KitchenKeeperView(viewsets.ModelViewSet):

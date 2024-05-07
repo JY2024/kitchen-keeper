@@ -4,4 +4,7 @@ from . import views
 urlpatterns = [
     path("notes/", views.NoteListCreate.as_view(), name="note-list"),
     path("notes/delete/<int:pk>/", views.NoteDelete.as_view(), name="delete-note"),
+    # recipes
+    path('recipes/', views.RecipeCreateAPIView.as_view(), name='recipe-create'),
+    path('recipes/<int:pk>/', views.RecipeRetrieveUpdateDestroyAPIView.as_view(), name='recipe-detail'),
 ]

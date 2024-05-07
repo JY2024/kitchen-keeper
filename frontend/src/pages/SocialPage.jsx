@@ -4,21 +4,62 @@ import RecipeCard from "../components/RecipeCard";
 import { Grid, Button, Typography, Chip, IconButton } from '@mui/material';
 import Slider from 'react-slick'; // for recipe carousel
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'; // right arrow icon
+import api from "../api";
 
 export default function SocialPage() {
     // const [searchQuery, setSearchQuery] = useState(""); 
-    // const [recipes, setRecipes] = useState([]);
+    const [recipes, setRecipes] = useState([]);
+    
     // const [startIndex, setStartIndex] = useState(0);
+
+    const getRecipes = () => {
+        api
+        .get("/api/recipes/")
+        .then((res) => res.data)
+        .then((data) => setRecipes(data))
+        .catch((err) => alert(err));
+    };
+
+    const createRecipe = (e) => {
+        e.preventDefault();
+        api
+          .post("/api/recipes/", { title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"})
+          .then((res) => {
+            if (res.status === 201) alert("Note created!");
+            else alert("Failed to make note.");
+            // getRecipes();
+          })
+          .catch((err) => alert(err));
+      };
+
+    // const createRecipe = (e) => {
+    //     e.preventDefault();
+    //     let body = JSON.stringify({ title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"});
+    //     console.log(body);
+    //     api
+    //     .post("/api/recipes/", body, {
+    //         accept: "application/json",
+    //         mode: "cors"
+    //     })
+    //     .then((res) => {
+    //         console.log(res.status);
+    //         console.log(res.body);
+    //         if (res.status === 201) alert("Recipe created!");
+    //         else alert("Failed to make recipe.");
+    //         // getRecipes();
+    //     })
+    //     .catch((err) => alert(err));
+    // };
 
     // DUMMY DATA
 
     const trendingTags = ["Curry", "Shrimp", "Pork"];
 
-    const recipes = [
-        { id: 1, title: "Kimchi Stew", tags: ["Stew", "Spicy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
-        { id: 2, title: "Spaghetti", tags: ["Carbs", "Healthy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
-        { id: 3, title: "Strawberry Ice Cream", tags: ["Dessert", "Fruit"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" }
-    ];
+    // const recipes = [
+    //     { id: 1, title: "Kimchi Stew", tags: ["Stew", "Spicy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
+    //     { id: 2, title: "Spaghetti", tags: ["Carbs", "Healthy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
+    //     { id: 3, title: "Strawberry Ice Cream", tags: ["Dessert", "Fruit"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" }
+    // ];
 
     // ------------------ SLIDER (food carousel) -------------------------------------
     const sliderRef = useRef(null); // reference for slider component
@@ -63,8 +104,9 @@ export default function SocialPage() {
                         {/* Create Post Button */}
                         <Grid item xs={4} container>
                             <Button 
-                                variant="contained" 
+                                variant="contained"
                                 style={{ backgroundColor: 'green', color: 'white', fontStyle: 'italic' }}
+                                onClick={createRecipe}
                             >
                                 Create Post
                             </Button>
@@ -106,7 +148,7 @@ export default function SocialPage() {
                     {/* Right Arrow IconButton */}
                     <IconButton 
                         style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }} 
-                        onClick={onClickNext}
+                        onClick={createRecipe}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>
