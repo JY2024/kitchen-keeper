@@ -281,6 +281,17 @@ button:hover {
     height: auto;
   }
 
+  .form-button {
+    margin: auto;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 50%);
+  }
+
   .checkmark {
     color: green;
+  }
+  
+  .crossmark {
+    color: red;
   }
