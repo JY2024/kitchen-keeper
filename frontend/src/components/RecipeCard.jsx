@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Chip, Button } from '@mui/material';
+import { Typography, Chip, Button, Box} from '@mui/material';
 
 const RecipeCard = ({ recipe }) => {
     return (
@@ -12,7 +12,8 @@ const RecipeCard = ({ recipe }) => {
             border: '3px solid #e0e0e0', // Add border for visual separation
             borderRadius: '20px', // Add border radius for rounded corners
         }}>
-            <img src={recipe.image} alt={recipe.title} style={{ width: '100%' }} />
+            <Box component="img" alt={recipe.title} src={recipe.unsplash_url}/>
+            {/* <img src={recipe.unsplash_url} alt={recipe.title} style={{ width: '100%' }} /> */}
             <Typography variant="h5" gutterBottom>{recipe.title}</Typography>
             <div>
                 {recipe.tags.map(tag => (

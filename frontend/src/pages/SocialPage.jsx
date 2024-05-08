@@ -1,20 +1,35 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import api from "../api";
 // components
 import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
 // visual
-import { Grid, Button, Typography, Chip, IconButton } from '@mui/material';
+import { Grid, Button, Typography, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import Slider from 'react-slick'; // for recipe carousel
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'; // right arrow icon
+import ChipInput from 'material-ui-chip-input'
 
 export default function SocialPage() {
     // const [searchQuery, setSearchQuery] = useState(""); 
+    const [dialogOpen, setDialogOpen] = React.useState(false);
     const [recipes, setRecipes] = useState([]);
+    const [ingredMultiline, setMultiline] = useState("");
 
     useEffect(() => {
         getRecipes();
     }, []);
+
+    const handleClickOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleClose = () => {
+        setDialogOpen(false);
+    };
+
+    const handleRecipePost = () => {
+
+    }
 
     const getRecipes = () => {
         api
@@ -29,7 +44,14 @@ export default function SocialPage() {
     const createRecipe = (e) => {
         e.preventDefault();
         api
-          .post("/api/recipes/", { "title": "test title",  "tags": ["tag1", "tag2"], "description": "dckjnjdncjknd", "ingredients": ["ing1", "ing2"], "instructions": "Just add water"})
+          .post("/api/recipes/", {
+            "title": "test",
+            "tags": ["tag1", "tag2"],
+            "description": "dckjnjdncjknd",
+            "ingredients": ["ing1", "ing2"],
+            "instructions": "Just add water",
+            "unsplash_url": "https://unsplash.com/photos/cooked-dish-on-table-k6VCwawxgMg"
+        })
           .then((res) => {
             if (res.status === 201) alert("Recipe created!");
             else alert("Failed to make recipe.");
@@ -136,10 +158,42 @@ export default function SocialPage() {
                             <Button 
                                 variant="contained"
                                 style={{ backgroundColor: 'green', color: 'white', fontStyle: 'italic' }}
-                                onClick={createRecipe}
+                                onClick={handleClickOpen}
                             >
                                 Create Post
                             </Button>
+                            {/* Dialog for making post */}
+                            <Dialog open={dialogOpen} onClose={handleClose} fullWidth={true} maxWidth={"sm"}>
+                                <DialogTitle>Create Post</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>Title</DialogContentText>
+                                    <TextField/>
+                                    <DialogContentText>Add tags here...</DialogContentText>
+                                    <ChipInput
+                                        defaultValue={['foo', 'bar']}
+                                        onChange={(chips) => {}}
+                                    />
+                                    <DialogContentText>Add description here...</DialogContentText>
+                                    <TextField/>
+                                    <DialogContentText>Add ingredients here...</DialogContentText>
+                                    <TextField
+                                        multiline
+                                        value={ingredMultiline}
+                                        onChange={e => setMultiline(e.target.value)}
+                                    />
+                                    <DialogContentText>Add instructions here...</DialogContentText>
+                                    <TextField/>
+                                    <DialogContentText>Upload an image</DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleClose}>
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={handleRecipePost}>
+                                        Post
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -169,11 +223,12 @@ export default function SocialPage() {
                         Explore recipes!
                     </Typography>
                     <Slider ref={sliderRef} {...sliderSettings}>
-                        {recipes.map(recipe => (
+                        {recipes.map((recipe) => {
+                            return (
                             <div key={recipe.id}>
-                                <RecipeCard recipe={recipe} />
+                                <RecipeCard recipe={recipe} key={recipe.id}/>
                             </div>
-                        ))}
+                        )})}
                     </Slider>
                     {/* Right Arrow IconButton */}
                     <IconButton 
