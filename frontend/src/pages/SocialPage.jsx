@@ -1,36 +1,66 @@
-import React, { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import api from "../api";
+// components
 import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
+// visual
 import { Grid, Button, Typography, Chip, IconButton } from '@mui/material';
 import Slider from 'react-slick'; // for recipe carousel
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'; // right arrow icon
-import api from "../api";
 
 export default function SocialPage() {
     // const [searchQuery, setSearchQuery] = useState(""); 
     const [recipes, setRecipes] = useState([]);
-    
-    // const [startIndex, setStartIndex] = useState(0);
+
+    useEffect(() => {
+        getRecipes();
+    }, []);
 
     const getRecipes = () => {
         api
-        .get("/api/recipes/")
-        .then((res) => res.data)
-        .then((data) => setRecipes(data))
-        .catch((err) => alert(err));
+            .get("/api/recipes/")
+            .then((res) => res.data)
+            .then((data) => {
+                setRecipes(data);
+            })
+            .catch((err) => alert(err));
     };
 
     const createRecipe = (e) => {
         e.preventDefault();
         api
-          .post("/api/recipes/", { title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"})
+          .post("/api/recipes/", { "title": "test title",  "tags": ["tag1", "tag2"], "description": "dckjnjdncjknd", "ingredients": ["ing1", "ing2"], "instructions": "Just add water"})
           .then((res) => {
-            if (res.status === 201) alert("Note created!");
-            else alert("Failed to make note.");
-            // getRecipes();
+            if (res.status === 201) alert("Recipe created!");
+            else alert("Failed to make recipe.");
+            getRecipes();
           })
           .catch((err) => alert(err));
       };
+    
+    
+    
+    // const [startIndex, setStartIndex] = useState(0);
+
+    // const getRecipes = () => {
+    //     api
+    //     .get("/api/recipes/")
+    //     .then((res) => res.data)
+    //     .then((data) => setRecipes(data))
+    //     .catch((err) => alert(err));
+    // };
+
+    // const createRecipe = (e) => {
+    //     e.preventDefault();
+    //     api
+    //       .post("/api/recipes/", { title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"})
+    //       .then((res) => {
+    //         if (res.status === 201) alert("Note created!");
+    //         else alert("Failed to make note.");
+    //         // getRecipes();
+    //       })
+    //       .catch((err) => alert(err));
+    //   };
 
     // const createRecipe = (e) => {
     //     e.preventDefault();
@@ -51,7 +81,7 @@ export default function SocialPage() {
     //     .catch((err) => alert(err));
     // };
 
-    // DUMMY DATA
+    // -------------------------------DUMMY DATA-------------------------------------------
 
     const trendingTags = ["Curry", "Shrimp", "Pork"];
 
@@ -78,18 +108,18 @@ export default function SocialPage() {
     };
 
     // ------------------ SEARCHING --------------------------------------------------
-    const onSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
+    // const onSearchChange = (e) => {
+    //     setSearchQuery(e.target.value);
+    // };
 
-    const onSearchClick = () => {
+    // const onSearchClick = () => {
         
-    };
+    // };
 
-    // ------------------ POSTING --------------------------------------------------
-    const handleCreatePostClick = () => {
+    // // ------------------ POSTING --------------------------------------------------
+    // const handleCreatePostClick = () => {
         
-    };
+    // };
 
     return (
         <div style={{ paddingTop: '20px' }}>
@@ -148,7 +178,7 @@ export default function SocialPage() {
                     {/* Right Arrow IconButton */}
                     <IconButton 
                         style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }} 
-                        onClick={createRecipe}
+                        onClick={() => {}}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>

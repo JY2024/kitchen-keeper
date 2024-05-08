@@ -14,37 +14,6 @@ from .serializers import KitchenKeeperSerializer
 from .models import KitchenKeeper
 
 # Create your views here.
-
-class RecipeCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Recipe.objects
-    
-    def perform_create(self, serializer):
-        print("jdncjknd")
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)
-        else:
-            print(serializer.errors)
-
-# class RecipeCreateAPIView(generics.CreateAPIView):
-#     queryset = Recipe.objects.all()
-#     serializer_class = RecipeSerializer
-
-#     # def perform_create(self, serializer):
-#     #     serializer.save(author=self.request.user)
-#     def perform_create(self, serializer):
-#         if serializer.is_valid():
-#             serializer.save(author=self.request.user)
-#         else:
-#             print(serializer.errors)
-
-class RecipeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
  
 # create a class for the KitchenKeeper model viewsets
 class KitchenKeeperView(viewsets.ModelViewSet):
@@ -83,3 +52,27 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+# recipe views
+
+class RecipeCreate(generics.ListCreateAPIView):
+    serializer_class = RecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Recipe.objects.filter(author=user)
+        
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+class RecipeDelete(generics.DestroyAPIView):
+    serializer_class = RecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Recipe.objects.filter(author=user)
