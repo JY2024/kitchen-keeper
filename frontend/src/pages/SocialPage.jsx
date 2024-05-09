@@ -14,6 +14,11 @@ export default function SocialPage() {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [recipes, setRecipes] = useState([]);
     const [ingredMultiline, setMultiline] = useState("");
+    const [title, setTitle] = useState("");
+    const [tags, setTags] = useState([]);
+    const [description, setDescription] = useState("");
+    const [ingredients, setIngredients] = useState([]);
+    const [instructions, setInstructions] = useState("");
 
     useEffect(() => {
         getRecipes();
@@ -27,8 +32,8 @@ export default function SocialPage() {
         setDialogOpen(false);
     };
 
-    const handleRecipePost = () => {
-
+    const handlePostCreation = (e) => {
+        createRecipe(e);
     }
 
     const getRecipes = () => {
@@ -44,18 +49,20 @@ export default function SocialPage() {
     const createRecipe = (e) => {
         e.preventDefault();
         api
-          .post("/api/recipes/", {
-            "title": "test",
-            "tags": ["tag1", "tag2"],
-            "description": "dckjnjdncjknd",
-            "ingredients": ["ing1", "ing2"],
-            "instructions": "Just add water",
-            "unsplash_url": "https://unsplash.com/photos/cooked-dish-on-table-k6VCwawxgMg"
-        })
+            .post("/api/recipes/", { title, "tags": ["tag1"], description, "ingredients": ["rice", "seaweed"], instructions, "unsplash_url": "none"})
+        //   .post("/api/recipes/", {
+        //     "title": "test",
+        //     "tags": ["tag1", "tag2"],
+        //     "description": "dckjnjdncjknd",
+        //     "ingredients": ["ing1", "ing2"],
+        //     "instructions": "Just add water",
+        //     "unsplash_url": "https://unsplash.com/photos/cooked-dish-on-table-k6VCwawxgMg"
+        // })
           .then((res) => {
             if (res.status === 201) alert("Recipe created!");
             else alert("Failed to make recipe.");
             getRecipes();
+            handleClose();
           })
           .catch((err) => alert(err));
       };
@@ -167,29 +174,35 @@ export default function SocialPage() {
                                 <DialogTitle>Create Post</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>Title</DialogContentText>
-                                    <TextField/>
+                                    <TextField onChange={(e) => setTitle(e.target.value)}/>
                                     <DialogContentText>Add tags here...</DialogContentText>
                                     <ChipInput
-                                        defaultValue={['foo', 'bar']}
-                                        onChange={(chips) => {}}
+                                        defaultValue={[]}
+                                        onChange={(chips) => setTags(chips)} // chips is array of strings
                                     />
                                     <DialogContentText>Add description here...</DialogContentText>
-                                    <TextField/>
+                                    <TextField onChange={(e) => setDescription(e.target.value)}/>
                                     <DialogContentText>Add ingredients here...</DialogContentText>
                                     <TextField
                                         multiline
-                                        value={ingredMultiline}
-                                        onChange={e => setMultiline(e.target.value)}
+                                        onChange={e => {
+                                            let ingred_list = e.target.value;
+                                            setIngredients(ingred_list.split("\n"));
+                                        }}
                                     />
                                     <DialogContentText>Add instructions here...</DialogContentText>
-                                    <TextField/>
+                                    <TextField 
+                                    multiline
+                                    onChange={(e) => setInstructions(e.target.value)}
+                                    rows={7}
+                                    maxRows={Infinity}/>
                                     <DialogContentText>Upload an image</DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={handleClose}>
                                         Cancel
                                     </Button>
-                                    <Button onClick={handleRecipePost}>
+                                    <Button onClick={handlePostCreation}>
                                         Post
                                     </Button>
                                 </DialogActions>
