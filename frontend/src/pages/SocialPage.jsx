@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import api from "../api";
 // components
-import SearchBar from "../components/SearchBar";
+// import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
 // visual
-import { Grid, Button, Typography, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import { Grid, Button, Typography, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, Select, MenuItem} from '@mui/material';
 import Slider from 'react-slick'; // for recipe carousel
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'; // right arrow icon
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'; // right arrow icon
+
 import ChipInput from 'material-ui-chip-input'
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function SocialPage() {
     // const [searchQuery, setSearchQuery] = useState(""); 
@@ -19,6 +22,9 @@ export default function SocialPage() {
     const [description, setDescription] = useState("");
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState("");
+    const [filterOption, setFilterOption] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const searchRef = useRef("");
 
     useEffect(() => {
         getRecipes();
@@ -46,6 +52,44 @@ export default function SocialPage() {
             .catch((err) => alert(err));
     };
 
+    const getRecipesFiltered = (filterOption, searchQuery) => {
+        if (searchQuery === "") {
+            getRecipes();
+        }
+        api
+            .get("/api/recipes/")
+            .then((res) => res.data)
+            .then((data) => {
+                searchQuery = searchQuery.toLowerCase().split(" ");
+                if (filterOption === "title") {
+                    const title_check = (title_string) => searchQuery.some(queryTerm => title_string.toLowerCase().includes(queryTerm));
+                    setRecipes(data.filter(recipe => title_check(recipe.title)));
+                } else if (filterOption === "tags") {
+                    const tag_check = (tag_arr) => searchQuery.some(queryTerm => tag_arr.includes(queryTerm));
+                    setRecipes(data.filter(recipe => tag_check(recipe.tags)));
+                } else if (filterOption === "ingredients") {
+                    const ingred_check = (ingred_arr) => searchQuery.some(queryTerm => {
+                        if (ingred_arr.includes(queryTerm)) {
+                            console.log("found a true")
+                        }
+                        return ingred_arr.includes(queryTerm);
+                    });
+                    setRecipes(data.filter(recipe => {
+                        let ingreds = recipe.ingredients;
+                        let ingreds2 = [];
+                        ingreds.forEach((ingred_str) => {
+                            ingreds2.push(ingred_str.split(" "));
+                        }); 
+                        console.log(ingreds2);
+                        return ingred_check(ingreds2);
+                    }));
+                } else {
+                    setRecipes(data);
+                }
+            })
+            .catch((err) => alert(err));
+    }
+
     const createRecipe = (e) => {
         e.preventDefault();
         api
@@ -69,56 +113,11 @@ export default function SocialPage() {
     
     
     
-    // const [startIndex, setStartIndex] = useState(0);
-
-    // const getRecipes = () => {
-    //     api
-    //     .get("/api/recipes/")
-    //     .then((res) => res.data)
-    //     .then((data) => setRecipes(data))
-    //     .catch((err) => alert(err));
-    // };
-
-    // const createRecipe = (e) => {
-    //     e.preventDefault();
-    //     api
-    //       .post("/api/recipes/", { title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"})
-    //       .then((res) => {
-    //         if (res.status === 201) alert("Note created!");
-    //         else alert("Failed to make note.");
-    //         // getRecipes();
-    //       })
-    //       .catch((err) => alert(err));
-    //   };
-
-    // const createRecipe = (e) => {
-    //     e.preventDefault();
-    //     let body = JSON.stringify({ title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"});
-    //     console.log(body);
-    //     api
-    //     .post("/api/recipes/", body, {
-    //         accept: "application/json",
-    //         mode: "cors"
-    //     })
-    //     .then((res) => {
-    //         console.log(res.status);
-    //         console.log(res.body);
-    //         if (res.status === 201) alert("Recipe created!");
-    //         else alert("Failed to make recipe.");
-    //         // getRecipes();
-    //     })
-    //     .catch((err) => alert(err));
-    // };
+    const [startIndex, setStartIndex] = useState(0);
 
     // -------------------------------DUMMY DATA-------------------------------------------
 
     const trendingTags = ["Curry", "Shrimp", "Pork"];
-
-    // const recipes = [
-    //     { id: 1, title: "Kimchi Stew", tags: ["Stew", "Spicy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
-    //     { id: 2, title: "Spaghetti", tags: ["Carbs", "Healthy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
-    //     { id: 3, title: "Strawberry Ice Cream", tags: ["Dessert", "Fruit"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" }
-    // ];
 
     // ------------------ SLIDER (food carousel) -------------------------------------
     const sliderRef = useRef(null); // reference for slider component
@@ -127,6 +126,10 @@ export default function SocialPage() {
     const onClickNext = () => {
         sliderRef.current.slickNext(); // slide to next slides
     };
+    const onClickPrev = () => {
+        sliderRef.current.slickPrev(); // slide to next slides
+    };
+
 
     const sliderSettings = {
         dots: true,
@@ -150,13 +153,60 @@ export default function SocialPage() {
         
     // };
 
+    const handleSearch = () => {
+        let query = searchRef.current.value;
+        getRecipesFiltered(filterOption, query);
+    }
+
+    
+    function SearchBar() {
+        return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div>
+            <TextField
+                label={<Typography variant="body1" fontStyle="italic">Search for posts...</Typography>}
+                variant="outlined"
+                onChange={() => {}} // setSearchQuery
+                fullWidth
+                InputProps={{
+                    style: {
+                    color: "gray",
+                    borderRadius: 20
+                    }
+                }}
+                inputRef={searchRef} 
+            />
+            </div>
+            <IconButton onClick={handleSearch} size="large">
+            <SearchIcon />
+            </IconButton>
+        </div>
+        );
+    }
+
     return (
         <div style={{ paddingTop: '20px' }}>
             <Grid container spacing={10}>
                 {/* Top Row (Row 1) */}
                 <Grid item xs={12}>
                     {/* Search Bar */}
-                    <Grid container spacing={1} alignItems="center">
+                    <Grid container spacing={3} alignItems="center">
+                        <Grid item xs={2}>
+                            Filter by:
+                            <FormControl fullWidth>
+                            <InputLabel id="search-select-label">Search by...</InputLabel>
+                            <Select
+                                labelId="search-select-label"
+                                value={filterOption}
+                                label="Filter by:"
+                                onChange={(e) => setFilterOption(e.target.value)}
+                            >
+                                <MenuItem value={"title"}>Title</MenuItem>
+                                <MenuItem value={"tags"}>Tags</MenuItem>
+                                <MenuItem value={"ingredients"}>Ingredients</MenuItem>
+                            </Select>
+                            </FormControl>
+                        </Grid>
                         <Grid item xs={8}>
                             <SearchBar></SearchBar>
                         </Grid>
@@ -231,6 +281,12 @@ export default function SocialPage() {
                     </div>
                 </Grid>
                 <Grid item xs={9} style={{ position: 'relative' }}>
+                    <IconButton 
+                        style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} 
+                        onClick={onClickPrev}
+                    >
+                        <KeyboardArrowLeftIcon />
+                    </IconButton>
                     {/* Recipe Carousel Section */}
                     <Typography variant="h6" gutterBottom>
                         Explore recipes!
@@ -246,7 +302,7 @@ export default function SocialPage() {
                     {/* Right Arrow IconButton */}
                     <IconButton 
                         style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }} 
-                        onClick={() => {}}
+                        onClick={onClickNext}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>

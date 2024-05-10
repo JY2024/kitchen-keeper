@@ -12,7 +12,7 @@ const RecipeCard = ({ recipe }) => {
             border: '3px solid #e0e0e0', // Add border for visual separation
             borderRadius: '20px', // Add border radius for rounded corners
         }}>
-            <Box component="img" alt={recipe.title} src={recipe.unsplash_url}/>
+            <img src={"https://unsplash.com/photos/cooked-dish-on-table-k6VCwawxgMg"}/>
             {/* <img src={recipe.unsplash_url} alt={recipe.title} style={{ width: '100%' }} /> */}
             <Typography variant="h5" gutterBottom>{recipe.title}</Typography>
             <div>
