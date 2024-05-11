@@ -13,9 +13,21 @@ import ChipInput from 'material-ui-chip-input'
 import SearchIcon from '@mui/icons-material/Search';
 import Navbar from "../components/Navbar"
 
+//Encodes an image as a base64 string
+//encodeImageAsURL(file): string
+const encodeImageAsURL = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    return new Promise((resolve, reject) => {
+        reader.onloadend = () => {
+            resolve(reader.result);
+        }
+    });
+}
+
 export default function SocialPage() {
-    // const [searchQuery, setSearchQuery] = useState(""); 
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [allRecipes, setAllRecipes] = useState([]);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [recipes, setRecipes] = useState([]);
     const [ingredMultiline, setMultiline] = useState("");
     const [title, setTitle] = useState("");
@@ -23,19 +35,23 @@ export default function SocialPage() {
     const [description, setDescription] = useState("");
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState("");
+    const [selectedImage, setSelectedImage] = useState(null);
     const [filterOption, setFilterOption] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [popularTags, setPopularTags] = useState([]);
-    const searchRef = useRef("");
+
+    const searchRef = useRef();
+
 
     useEffect(() => {
-        getRecipes();
+        document.body.style = 'background: #f8fff5;';
+        getAllRecipes();
     }, []);
 
     const findPopularTags = () => {
         let all_tags_and_counts = [];
         const tags_seen = [];
-        recipes.forEach(recipe => {
+        allRecipes.forEach(recipe => {
             const ingreds = recipe.tags; // array of strings
             ingreds.forEach(ing => {
                 if (!(tags_seen.includes(ing))) {
@@ -57,12 +73,13 @@ export default function SocialPage() {
         setPopularTags(tags_to_add);
     };
 
-    const getRecipes = () => {
+    const getAllRecipes = () => {
         api
             .get("/api/recipes/")
             .then((res) => res.data)
             .then((data) => {
                 setRecipes(data);
+                setAllRecipes(data);
             })
             .then(() => findPopularTags())
             .catch((err) => alert(err));
@@ -82,9 +99,9 @@ export default function SocialPage() {
 
     const getRecipesFiltered = (filterOption, searchQuery) => {
         if (searchQuery === "") {
-            getRecipes();
+            getAllRecipes();
         } else {
-            let data = recipes;
+            let data = allRecipes;
             searchQuery = searchQuery.toLowerCase().split(" ");
             if (filterOption === "title") {
                 const title_check = (title_string) => searchQuery.some(queryTerm => title_string.toLowerCase().includes(queryTerm));
@@ -95,7 +112,7 @@ export default function SocialPage() {
             } else if (filterOption === "ingredients") {
                 const ingred_check = (ingred_arr) => searchQuery.some(queryTerm => {
                     return ingred_arr.includes(queryTerm)
-            });
+                });
                 setRecipes(data.filter(recipe => {
                     let ingreds = recipe.ingredients;
                     let ingreds2 = [];
@@ -107,7 +124,7 @@ export default function SocialPage() {
             } else {
                 setRecipes(data);
             }
-    
+            // fix carousel display
         }
         
     }
@@ -115,29 +132,17 @@ export default function SocialPage() {
     const createRecipe = (e) => {
         e.preventDefault();
         api
-            .post("/api/recipes/", { "title": title, "tags": tags, "description": description, "ingredients": ingredients, "instructions": instructions})
+            .post("/api/recipes/", { "title": title, "tags": tags, "description": description, "ingredients": ingredients, "instructions": instructions, "img": selectedImage})
           .then((res) => {
             if (res.status === 201) alert("Recipe created!");
             else alert("Failed to make recipe.");
             handleClose();
           })
           .then(() => {
-            getRecipes();
+            getAllRecipes();
           })
           .catch((err) => alert(err));
       };
-
-    //   const deleteRecipe = (id) => {
-    //     api
-    //       .delete(`/api/recipes/delete/${id}/`)
-    //       .then((res) => {
-    //         if (res.status === 204) alert("Recipe deleted!");
-    //         else alert("Failed to delete recipe.");
-    //         getRecipes();
-    //       })
-    //       .catch((err) => alert(err));
-    //   };
-    
     
     
     const [startIndex, setStartIndex] = useState(0);
@@ -214,12 +219,13 @@ export default function SocialPage() {
     return (
         <div style={{ paddingTop: '20px' }}>
             <Navbar />
-            <Grid container spacing={10}>
+            <Grid container spacing={3}>
                 {/* Top Row (Row 1) */}
                 <Grid item xs={12}>
                     {/* Search Bar */}
-                    <Grid container spacing={3} alignItems="center">
-                        <Grid item xs={2}>
+                    <Grid container spacing={1} alignItems="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={3}>
                             Filter by:
                             <FormControl fullWidth>
                             <InputLabel id="search-select-label">Search by...</InputLabel>
@@ -227,7 +233,9 @@ export default function SocialPage() {
                                 labelId="search-select-label"
                                 value={filterOption}
                                 label="Filter by:"
-                                onChange={(e) => setFilterOption(e.target.value)}
+                                onChange={(e) => {
+                                    setFilterOption(e.target.value);
+                                }}
                             >
                                 <MenuItem value={"title"}>Title</MenuItem>
                                 <MenuItem value={"tags"}>Tags</MenuItem>
@@ -235,11 +243,11 @@ export default function SocialPage() {
                             </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={4}>
                             <SearchBar></SearchBar>
                         </Grid>
                         {/* Create Post Button */}
-                        <Grid item xs={4} container>
+                        <Grid item xs={2} container>
                             <Button 
                                 variant="contained"
                                 style={{ backgroundColor: 'green', color: 'white', fontStyle: 'italic' }}
@@ -275,6 +283,16 @@ export default function SocialPage() {
                                     rows={7}
                                     maxRows={Infinity}/>
                                     <DialogContentText>Upload an image</DialogContentText>
+                                    <input
+                                        type="file"
+                                        name="myImage"
+                                        onChange={(event) => {
+                                            encodeImageAsURL(event.target.files[0]).then((result) => {
+                                                console.log("result " + result);
+                                                setSelectedImage(result);
+                                            }).catch(console.error);
+                                        }}
+                                    />
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={handleClose}>
