@@ -11,6 +11,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'; // ri
 
 import ChipInput from 'material-ui-chip-input'
 import SearchIcon from '@mui/icons-material/Search';
+import Navbar from "../components/Navbar"
 
 export default function SocialPage() {
     // const [searchQuery, setSearchQuery] = useState(""); 
@@ -24,11 +25,48 @@ export default function SocialPage() {
     const [instructions, setInstructions] = useState("");
     const [filterOption, setFilterOption] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [popularTags, setPopularTags] = useState([]);
     const searchRef = useRef("");
 
     useEffect(() => {
         getRecipes();
     }, []);
+
+    const findPopularTags = () => {
+        let all_tags_and_counts = [];
+        const tags_seen = [];
+        recipes.forEach(recipe => {
+            const ingreds = recipe.tags; // array of strings
+            ingreds.forEach(ing => {
+                if (!(tags_seen.includes(ing))) {
+                    all_tags_and_counts.push([ing, 0]);
+                    tags_seen.push(ing);
+                }
+                all_tags_and_counts.find(sub_arr => sub_arr[0] === ing)[1] += 1;
+            });
+        });
+        all_tags_and_counts = all_tags_and_counts.sort((arr1, arr2) => {
+            return arr2[1] - arr1[1];
+    });
+        const tags_to_add = [];
+        for (let i = 0; i <= 5; i++) {
+            if (i < all_tags_and_counts.length) {
+                tags_to_add.push(all_tags_and_counts[i][0]);
+            }
+        }
+        setPopularTags(tags_to_add);
+    };
+
+    const getRecipes = () => {
+        api
+            .get("/api/recipes/")
+            .then((res) => res.data)
+            .then((data) => {
+                setRecipes(data);
+            })
+            .then(() => findPopularTags())
+            .catch((err) => alert(err));
+    };
 
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -42,82 +80,67 @@ export default function SocialPage() {
         createRecipe(e);
     }
 
-    const getRecipes = () => {
-        api
-            .get("/api/recipes/")
-            .then((res) => res.data)
-            .then((data) => {
-                setRecipes(data);
-            })
-            .catch((err) => alert(err));
-    };
-
     const getRecipesFiltered = (filterOption, searchQuery) => {
         if (searchQuery === "") {
             getRecipes();
+        } else {
+            let data = recipes;
+            searchQuery = searchQuery.toLowerCase().split(" ");
+            if (filterOption === "title") {
+                const title_check = (title_string) => searchQuery.some(queryTerm => title_string.toLowerCase().includes(queryTerm));
+                setRecipes(data.filter(recipe => title_check(recipe.title)));
+            } else if (filterOption === "tags") {
+                const tag_check = (tag_arr) => searchQuery.some(queryTerm => tag_arr.includes(queryTerm));
+                setRecipes(data.filter(recipe => tag_check(recipe.tags)));
+            } else if (filterOption === "ingredients") {
+                const ingred_check = (ingred_arr) => searchQuery.some(queryTerm => {
+                    return ingred_arr.includes(queryTerm)
+            });
+                setRecipes(data.filter(recipe => {
+                    let ingreds = recipe.ingredients;
+                    let ingreds2 = [];
+                    ingreds.forEach((ingred_str) => {
+                        ingreds2 = ingreds2.concat(ingred_str.split(" "));
+                    }); 
+                    return ingred_check(ingreds2);
+                }));
+            } else {
+                setRecipes(data);
+            }
+    
         }
-        api
-            .get("/api/recipes/")
-            .then((res) => res.data)
-            .then((data) => {
-                searchQuery = searchQuery.toLowerCase().split(" ");
-                if (filterOption === "title") {
-                    const title_check = (title_string) => searchQuery.some(queryTerm => title_string.toLowerCase().includes(queryTerm));
-                    setRecipes(data.filter(recipe => title_check(recipe.title)));
-                } else if (filterOption === "tags") {
-                    const tag_check = (tag_arr) => searchQuery.some(queryTerm => tag_arr.includes(queryTerm));
-                    setRecipes(data.filter(recipe => tag_check(recipe.tags)));
-                } else if (filterOption === "ingredients") {
-                    const ingred_check = (ingred_arr) => searchQuery.some(queryTerm => {
-                        if (ingred_arr.includes(queryTerm)) {
-                            console.log("found a true")
-                        }
-                        return ingred_arr.includes(queryTerm);
-                    });
-                    setRecipes(data.filter(recipe => {
-                        let ingreds = recipe.ingredients;
-                        let ingreds2 = [];
-                        ingreds.forEach((ingred_str) => {
-                            ingreds2.push(ingred_str.split(" "));
-                        }); 
-                        console.log(ingreds2);
-                        return ingred_check(ingreds2);
-                    }));
-                } else {
-                    setRecipes(data);
-                }
-            })
-            .catch((err) => alert(err));
+        
     }
 
     const createRecipe = (e) => {
         e.preventDefault();
         api
-            .post("/api/recipes/", { title, "tags": ["tag1"], description, "ingredients": ["rice", "seaweed"], instructions, "unsplash_url": "none"})
-        //   .post("/api/recipes/", {
-        //     "title": "test",
-        //     "tags": ["tag1", "tag2"],
-        //     "description": "dckjnjdncjknd",
-        //     "ingredients": ["ing1", "ing2"],
-        //     "instructions": "Just add water",
-        //     "unsplash_url": "https://unsplash.com/photos/cooked-dish-on-table-k6VCwawxgMg"
-        // })
+            .post("/api/recipes/", { "title": title, "tags": tags, "description": description, "ingredients": ingredients, "instructions": instructions})
           .then((res) => {
             if (res.status === 201) alert("Recipe created!");
             else alert("Failed to make recipe.");
-            getRecipes();
             handleClose();
+          })
+          .then(() => {
+            getRecipes();
           })
           .catch((err) => alert(err));
       };
+
+    //   const deleteRecipe = (id) => {
+    //     api
+    //       .delete(`/api/recipes/delete/${id}/`)
+    //       .then((res) => {
+    //         if (res.status === 204) alert("Recipe deleted!");
+    //         else alert("Failed to delete recipe.");
+    //         getRecipes();
+    //       })
+    //       .catch((err) => alert(err));
+    //   };
     
     
     
     const [startIndex, setStartIndex] = useState(0);
-
-    // -------------------------------DUMMY DATA-------------------------------------------
-
-    const trendingTags = ["Curry", "Shrimp", "Pork"];
 
     // ------------------ SLIDER (food carousel) -------------------------------------
     const sliderRef = useRef(null); // reference for slider component
@@ -138,6 +161,10 @@ export default function SocialPage() {
         slidesToShow: 3, // Show 3 slides at a time
         slidesToScroll: 3,
     };
+
+    const handleClickTags = () => {
+        findPopularTags();
+    }
 
     // ------------------ SEARCHING --------------------------------------------------
     // const onSearchChange = (e) => {
@@ -186,6 +213,7 @@ export default function SocialPage() {
 
     return (
         <div style={{ paddingTop: '20px' }}>
+            <Navbar />
             <Grid container spacing={10}>
                 {/* Top Row (Row 1) */}
                 <Grid item xs={12}>
@@ -263,13 +291,19 @@ export default function SocialPage() {
 
                 {/* Second Row */}
                 <Grid item xs={3}>
-                    {/* Trending Tags Section */}
+                    {/* Popular Tags Section */}
                     <div style={{ backgroundColor: '#f5f5f5', borderRadius: '8px', padding: '1rem', maxWidth: '150px'}}>
-                        <Typography variant="h6" gutterBottom>
-                            Trending tags
-                        </Typography>
+                        <Button 
+                                variant="h6"
+                                style={{ backgroundColor: 'gray', color: 'white', fontStyle: 'italic' }}
+                                onClick={handleClickTags}
+                            >
+                            <Typography variant="h6" gutterBottom>
+                                Popular Tags
+                            </Typography>
+                        </Button>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            {trendingTags.map(tag => (
+                            {popularTags.map(tag => (
                                 <Chip 
                                     key={tag} 
                                     label={tag} 
