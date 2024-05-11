@@ -6,7 +6,8 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
-import SelectedPost from "./pages/SelectedPost";
+// import SelectedPost from "./pages/SelectedPost";
+import SelectedPost_demo from "./pages/SelectedPost_demo";
 
 function Logout() {
   localStorage.clear();
@@ -35,11 +36,9 @@ function App() {
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route path="*" element={<NotFound />}></Route>
         <Route
-          path="/selectedPost"
+          path="/selectedPost_demo"
           element={
-            <ProtectedRoute>
-              <SelectedPost />
-            </ProtectedRoute>
+              <SelectedPost_demo />
           }
         ></Route>
       </Routes>
