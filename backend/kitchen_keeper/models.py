@@ -29,7 +29,7 @@ class Recipe(models.Model):
     ingredients = ArrayField(models.CharField(max_length=50))
     instructions = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    unsplash_url = models.CharField(max_length=500, default="default_val")
+    img = models.CharField(max_length=2000000, default="")
 
     def __str__(self):
         return self.title + "_" + self.author

@@ -34,5 +34,5 @@ class NoteSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ["title", "author", "tags", "description", "ingredients", "instructions", "created_at", "unsplash_url"]
+        fields = ["title", "author", "tags", "description", "ingredients", "instructions", "created_at", "img"]
         extra_kwargs = {"author": {"read_only": True}}
