@@ -8,6 +8,10 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 // import SelectedPost from "./pages/SelectedPost";
 import SelectedPost_demo from "./pages/SelectedPost_demo";
+import SocialPage from "./pages/SocialPage"
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 
 function Logout() {
   localStorage.clear();
@@ -41,6 +45,7 @@ function App() {
               <SelectedPost_demo />
           }
         ></Route>
+        <Route path="/social" element={<SocialPage />}></Route>
       </Routes>
     </BrowserRouter>
   );

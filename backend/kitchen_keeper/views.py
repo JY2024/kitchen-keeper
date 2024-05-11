@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer, PostSerializer, CommentSerializer
+from .serializers import UserSerializer, NoteSerializer, CommentSerializer, RecipeSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from.models import Note, Post, Comment
+from.models import Note, Recipe, Comment
 # import view sets from the REST framework
 from rest_framework import viewsets
  
@@ -32,7 +32,7 @@ class NoteListCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Note.objects.filter(author=user)
+        return Note.objects
     
     def perform_create(self, serializer):
         if serializer.is_valid():
@@ -47,28 +47,6 @@ class NoteDelete(generics.DestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Note.objects.filter(author=user)
-    
-# class PostListCreate(generics.ListCreateAPIView):
-#     serializer_class = PostSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         user = self.request.user
-#         return Post.objects
-    
-#     def perform_create(self, serializer):
-#         if serializer.is_valid():
-#             serializer.save(author=self.request.user)
-#         else:
-#             print(serializer.errors)
-
-# class PostDelete(generics.DestroyAPIView):
-#     serializer_class = PostSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         user = self.request.user
-#         return Post.objects.filter(author=user)
     
 class CommentListCreate(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
@@ -97,3 +75,27 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+# recipe views
+
+class RecipeCreate(generics.ListCreateAPIView):
+    serializer_class = RecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Recipe.objects.filter(author=user)
+        
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+class RecipeDelete(generics.DestroyAPIView):
+    serializer_class = RecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Recipe.objects.filter(author=user)

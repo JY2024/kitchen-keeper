@@ -1,1 +1,3 @@
 .venv/
+backend/kitchen_keeper/__pycache__/
+frontend/node_modules/
