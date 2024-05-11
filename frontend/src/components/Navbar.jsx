@@ -30,7 +30,7 @@ import {
     };
   
     return (
-      <AppBar position="sticky">
+      <AppBar position="sticky" sx={{ marginBottom: "20px" }}>
         <StyledToolbar>
           <Box className="navbar-logo-icon">
             <LunchDiningIcon sx={{ display: { xs: "block", sm: "none" } }} />

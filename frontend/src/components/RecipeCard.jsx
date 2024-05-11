@@ -1,20 +1,28 @@
-import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Chip } from '@mui/material';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+  Box,
+  Chip
+} from '@mui/material';
 
 export default function RecipeCard({ recipe }) {
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <img src={recipe.img.split(" ").join("+")} width={200}/>
+      {/* Recipe Image */}
+      <Box display="flex" justifyContent="center" marginBottom="8px" marginTop="8px">
+        <img src={recipe.img.split(" ").join("+")} width={200}/>
+      </Box>
+      
+      {/* Card Body */}
       <CardContent style={{backgroundColor:'#e0f7d7'}}>
+        {/* Card Title */}
         <Typography gutterBottom variant="h5" component="div">
           {recipe.title}
         </Typography>
+        {/* Tags Chips */}
         <div>
             {recipe.tags.map(tag => (
                 <Chip 
@@ -27,12 +35,17 @@ export default function RecipeCard({ recipe }) {
         </div>
       </CardContent>
       <div>
-      <CardActions>
-        <Button variant="outlined" color="primary" size="small" style={{ marginRight: '40px' }}>
+        <Box display="flex" justifyContent="space-between">
+          {/* Read More Button */}
+          <CardActions>
+            <Button variant="outlined" color="primary" size="small" style={{ marginRight: '40px' }} >
               Read More
-          </Button>
-        </CardActions>
-        <img src={recipe.profilePicture} alt="Profile" style={{ width: '30px', borderRadius: '50%' }} />
+            </Button>
+          </CardActions>
+          {/* Profile Picture */}
+          <img src={recipe.profilePicture} alt="Profile" style={{ width: '30px', borderRadius: '50%', left: "-80px" }} />
+        </Box>
+        
       </div>
     </Card>
   );

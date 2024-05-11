@@ -4,7 +4,7 @@ import api from "../api";
 // import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
 // visual
-import { Grid, Button, Typography, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, Select, MenuItem} from '@mui/material';
+import { Grid, Button, Typography, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, Select, MenuItem, Box} from '@mui/material';
 import Slider from 'react-slick'; // for recipe carousel
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'; // right arrow icon
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'; // right arrow icon
@@ -160,7 +160,7 @@ export default function SocialPage() {
 
 
     const sliderSettings = {
-        dots: true,
+        dots: false,
         infinite: false,
         speed: 500,
         slidesToShow: 3, // Show 3 slides at a time
@@ -308,18 +308,21 @@ export default function SocialPage() {
                 </Grid>
 
                 {/* Second Row */}
-                <Grid item xs={3}>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={2}>
                     {/* Popular Tags Section */}
                     <div style={{ backgroundColor: '#f5f5f5', borderRadius: '8px', padding: '1rem', maxWidth: '150px'}}>
-                        <Button 
-                                variant="h6"
-                                style={{ backgroundColor: 'gray', color: 'white', fontStyle: 'italic' }}
-                                onClick={handleClickTags}
-                            >
-                            <Typography variant="h6" gutterBottom>
-                                Popular Tags
-                            </Typography>
-                        </Button>
+                        <Box display="flex" justifyContent="center">
+                            <Button 
+                                    variant="h6"
+                                    style={{ backgroundColor: 'gray', color: 'white', fontStyle: 'italic', marginBottom: "10px" }}
+                                    onClick={handleClickTags}
+                                >
+                                <Typography variant="h6" gutterBottom fontSize="14px">
+                                    See Popular Tags
+                                </Typography>
+                            </Button>
+                        </Box>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             {popularTags.map(tag => (
                                 <Chip 
