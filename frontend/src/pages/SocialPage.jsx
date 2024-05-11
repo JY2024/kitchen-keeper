@@ -256,7 +256,7 @@ export default function SocialPage() {
                                 Create Post
                             </Button>
                             {/* Dialog for making post */}
-                            <Dialog open={dialogOpen} onClose={handleClose} fullWidth={true} maxWidth={"sm"}>
+                            <Dialog open={dialogOpen} onClose={handleClose} fullWidth={true}>
                                 <DialogTitle>Create Post</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>Title</DialogContentText>
@@ -267,8 +267,13 @@ export default function SocialPage() {
                                         onChange={(chips) => setTags(chips)} // chips is array of strings
                                     />
                                     <DialogContentText>Add description here...</DialogContentText>
-                                    <TextField onChange={(e) => setDescription(e.target.value)}/>
-                                    <DialogContentText>Add ingredients here...</DialogContentText>
+                                    <TextField 
+                                    multiline
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    rows={7}
+                                    maxRows={Infinity}
+                                    fullWidth={true}/>
+                                    <DialogContentText>Add ingredients here (put each ingredient on a new line)...</DialogContentText>
                                     <TextField
                                         multiline
                                         onChange={e => {
@@ -281,7 +286,8 @@ export default function SocialPage() {
                                     multiline
                                     onChange={(e) => setInstructions(e.target.value)}
                                     rows={7}
-                                    maxRows={Infinity}/>
+                                    maxRows={Infinity}
+                                    fullWidth={true}/>
                                     <DialogContentText>Upload an image</DialogContentText>
                                     <input
                                         type="file"
@@ -337,7 +343,7 @@ export default function SocialPage() {
                 </Grid>
                 <Grid item xs={9} style={{ position: 'relative' }}>
                     <IconButton 
-                        style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} 
+                        style={{ position: 'absolute', left: '1px', top: '50%', transform: 'translateY(-50%)' }} 
                         onClick={onClickPrev}
                     >
                         <KeyboardArrowLeftIcon />

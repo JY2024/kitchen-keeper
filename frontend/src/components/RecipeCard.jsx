@@ -10,10 +10,15 @@ import {
 
 export default function RecipeCard({ recipe }) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345 }} style={{
+        height: "fit-content",
+        minHeight: '25vw'
+    }}>
       {/* Recipe Image */}
-      <Box display="flex" justifyContent="center" marginBottom="8px" marginTop="8px">
-        <img src={recipe.img.split(" ").join("+")} width={200}/>
+      <Box display="flex" justifyContent="center" marginBottom="8px" marginTop="8px" style={{
+        maxHeight: "150px"
+      }}>
+        <img src={recipe.img.split(" ").join("+")} width={200} height={150}/>
       </Box>
       
       {/* Card Body */}
@@ -43,7 +48,6 @@ export default function RecipeCard({ recipe }) {
             </Button>
           </CardActions>
           {/* Profile Picture */}
-          <img src={recipe.profilePicture} alt="Profile" style={{ width: '30px', borderRadius: '50%', left: "-80px" }} />
         </Box>
         
       </div>
