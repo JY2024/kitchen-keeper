@@ -1,17 +1,27 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import * as react from 'react';
 import api from "../api";
 import Setting from "../components/Setting"
 import "../styles/Setting.css"
-//import "../styles/Home.css"
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import {useNavigate} from "react-router-dom";
 
 function SettingPage() {
-  const [settings, setSetting] = useState([]);
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
-  const [gender, setGender] = useState("");
-  const [sex, setSex] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [settings, setSetting] = react.useState([]);
+  const [name, setName] = react.useState("");
+  const [bio, setBio] = react.useState("");
+  const [gender, setGender] = react.useState("");
+  const [sex, setSex] = react.useState("");
+  const [username, setUsername] = react.useState("");
+  const [email, setEmail] = react.useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
+  const navigateTo = () => {
+    navigate("/logout");
+  }
+
 
   useEffect(() => {
     getSetting();
@@ -22,9 +32,15 @@ function SettingPage() {
       .get("/api/settings/")
       .then((res) => res.data)
       .then((data) => {
-        setSetting(data);
-        console.log(data);
-        })
+        console.log(data)
+        const { name, bio, gender, sex, username, email } = data[0];
+        setName(name);
+        setBio(bio);
+        setGender(gender);
+        setSex(sex);
+        setUsername(username);
+        setEmail(email);
+      })
       .catch((err) => alert(err));
   };
 
@@ -33,7 +49,7 @@ function SettingPage() {
       .delete(`/api/settings/delete/${id}/`)
       .then((res) => {
         if (res.status === 204) alert("Setting deleted!");
-        else alert("Failed tp delete setting.");
+        else alert("Failed to delete setting.");
         getSetting();
       })
       .catch((err) => alert(err));
@@ -47,92 +63,89 @@ function SettingPage() {
         if (res.status === 201) alert("Setting created!");
         else alert("Failed to make setting.");
         getSetting();
+        setIsEditing(false);
       })
       .catch((err) => alert(err));
   };
 
   return (
     <div className="settings-container"> 
-      <div>
-        <h2>Setting</h2>
-        {settings.map((setting) => (
-          <div className="setting" key={setting.id}>
-          <p className="setting-text">Name: {setting.name}</p>
-          <p className="setting-text">Bio: {setting.bio}</p>
-          <p className="setting-text">Gender: {setting.gender}</p>
-          <p className="setting-text">Sex: {setting.sex}</p>
-          <p className="setting-text">Username: {setting.username}</p>
-          <p className="setting-text">Email: {setting.email}</p>
-          <button onClick={() => deleteSetting(setting.id)}>Delete</button>
+      <h2>Info</h2>
+      <Box
+        component="form"
+        onSubmit={createSetting}
+        sx={{
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <div>
+          <TextField
+            required
+            id="Full_Name-required"
+            label="Full Name"
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value);
+            }}
+            disabled = {!isEditing}
+          />
+          <TextField
+            id="Bio-optional"
+            label="Bio"
+            value={bio}
+            onChange={(event) => {
+              setBio(event.target.value);
+            }}
+            disabled = {!isEditing}
+          />
+          <TextField
+            required
+            id="Gender-required"
+            label="Gender"
+            value={gender}
+            onChange={(event) => {
+              setGender(event.target.value);
+            }}
+            disabled = {!isEditing}
+          />
+          <TextField
+            id="Sex-optional"
+            label="Sex"
+            value={sex}
+            onChange={(event) => {
+              setSex(event.target.value);
+            }}
+            disabled = {!isEditing}
+          />
+          <TextField
+            required
+            id="Username-required"
+            label="Username"
+            value={username}
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+            disabled = {!isEditing}
+          />
+          <TextField
+            required
+            id="Email-required"
+            label="Email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+            disabled = {!isEditing}
+          />
+          {isEditing && <input type="submit" value="Submit"></input>}
         </div>
-        ))}
-      </div>
-      <h2>Create a Setting</h2>
-      <form onSubmit={createSetting}>
-        <label htmlFor="Full name">Name:</label>
-        <br />
-        <input
-          type="text"
-          id="name"
-          name="name"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <label htmlFor="Bio">Bio:</label>
-        <br />
-        <textarea
-          id="Bio"
-          name="Bio"
-          required
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-        ></textarea>
-        <label htmlFor="gender">Gender:</label>
-        <br />
-        <input
-          type="text"
-          id="gender"
-          name="gender"
-          required
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-        />
-        <label htmlFor="sex">Sex:</label>
-        <br />
-        <input
-          type="text"
-          id="sex"
-          name="sex"
-          required
-          value={sex}
-          onChange={(e) => setSex(e.target.value)}
-        />
-        <label htmlFor="username">Username:</label>
-        <br />
-        <input
-          type="text"
-          id="username"
-          name="username"
-          required
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <label htmlFor="email">Email:</label>
-        <br />
-        <input
-          type="text"
-          id="email"
-          name="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br />
-        <input type="submit" value="Submit"></input>
-      </form>
+      </Box>
+      {!isEditing && <Button onClick={() => setIsEditing(true)}>Change</Button>}
+      <Button onClick={() => navigateTo()}>Log Out</Button>
     </div>
   );
 }
-
+  
 export default SettingPage;
