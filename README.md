@@ -8,13 +8,13 @@ Kitchen Keeper is a website that helps users keep track of the contents of their
 2. A social page where users can view recipes made by other users, search for recipes, see popular tags, and make their own posts.
 3. A meal generation page where users can select ingredients from their fridge and receive AI-generated recipes.
 
-Kitchen Keeper was made using React, Django, and OpenAI API.
-
+Kitchen Keeper was made using React, Django, and Gemini API 1.5 Pro.
 ## Dependencies
 
 Before trying to run the application, make sure to have these installed:
 - npm
 - python
+
 
 ## Installation
 
