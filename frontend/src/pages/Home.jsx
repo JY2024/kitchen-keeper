@@ -152,18 +152,17 @@ const Home = () => {
           mt: 3,
         }}
       >
-        <Box className="add-item-div">
+        <Box className="add-item-div" sx={{ marginLeft: "-10px" }} display="inline-block">
           <StyledButton variant="outlined" onClick={handleAddItem}>
             Add Item
           </StyledButton>
         </Box>
-        <Box className="display-list-div">
-          {/* onClick={handleDisplayList} */}
+        <Box className="display-list-div" sx={{ marginLeft: "20px" }} display="inline-block">
           <StyledButton variant="outlined" onClick={handleDisplayList}>
             Display List
           </StyledButton>
         </Box>
-        <Box className="food-chart-div">
+        <Box className="food-chart-div" sx={{ marginRight: "-10px" }} display="inline-block">
           <StyledButton variant="outlined" onClick={handleFoodChart}>Food Chart</StyledButton>
         </Box>
       </Box>
