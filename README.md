@@ -22,13 +22,19 @@ Before trying to run the application, make sure to have these installed:
 2. Unzip the folder
 3. Open your terminal
 4. (Optional) create a virtual environment
-Running the frontend
-5. cd into the frontend folder
-6. Run command "npm run dev"
-7. Follow the link to see the webpage
+5. cd into the kitchen-keeper directory
+Running the frontend React server
+6. cd into the frontend folder
+7. Run the command "npm install --legacy-peer-deps"
+8. Run command "npm run dev"
+9. Follow the link to see the webpage
 Running the server
-8. Run command "cd ../backend"
-9. Run command "python manage.py runserver"
+10. Run command "cd ../backend"
+11. Optionally in a virtual environment, run the following commands ((if on Mac, use python3 instead of python):
+      - "pip3 install -r requirements.txt"
+      - "python3 manage.py makemigrations"
+      - "python3 manage.py migrate"
+13. Run command "python manage.py runserver"
 
 Note for graders: Put the .env file (containing the database information) in backend folder.
 
