@@ -36,6 +36,6 @@ Running the server
       - "python3 manage.py migrate"
 13. Run command "python manage.py runserver"
 
-# Configuration
+## Configuration
 Note for graders: Put the .env file (containing the database information) in backend folder. We will email it to you.
 1. Need to use the .env file that will be emailed to the graders, which needs to be added to the root backend directory to properly interact with the Postgres data on ElephantSQL.  The .env file will contain the database hostname, port number to connect to, user, name, and password as environment variables.
