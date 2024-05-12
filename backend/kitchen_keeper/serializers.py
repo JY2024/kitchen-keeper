@@ -1,7 +1,7 @@
 # import serializers from the REST framework
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note, Comment
+from .models import Note, PostAndComment
 from .models import Note, Recipe
  
 # import the todo data model
@@ -32,12 +32,14 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "content", "created_at", "author"]
         extra_kwargs = {"author": {"read_only": True}}
 
-class CommentSerializer(serializers.ModelSerializer):
+class PostAndCommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
-        fields = ["id",  "content", "created_at", "author"]
+        model = PostAndComment
+        fields = ["id", "content", "post_id", "created_at", "author"]
+        extra_kwargs = {"p_id": {"read_only": True}, "author": {"read_only": True}}
+
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ["author", "tags", "description", "ingredients", "instructions", "created_at"]
+        fields = ["id", "title", "author", "tags", "description", "ingredients", "instructions", "created_at", "img"]
         extra_kwargs = {"author": {"read_only": True}}

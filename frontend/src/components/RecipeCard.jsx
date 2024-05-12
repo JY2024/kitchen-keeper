@@ -1,43 +1,74 @@
-import React from 'react';
-import { Typography, Chip, Button, Box} from '@mui/material';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+  Box,
+  Chip,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-const RecipeCard = ({ recipe }) => {
-    return (
-        <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            height: '300px',
-            justifyContent: 'space-between', // spread out content vertically
-            padding: '1rem',
-            border: '3px solid #e0e0e0', // Add border for visual separation
-            borderRadius: '20px', // Add border radius for rounded corners
-        }}>
-            <Box component="img" alt={recipe.title} src={recipe.unsplash_url}/>
-            {/* <img src={recipe.unsplash_url} alt={recipe.title} style={{ width: '100%' }} /> */}
-            <Typography variant="h5" gutterBottom>{recipe.title}</Typography>
-            <div>
-                {recipe.tags.map(tag => (
-                    <Chip 
-                        key={tag} 
-                        label={tag} 
-                        variant="outlined" 
-                        style={{ marginRight: '0.5rem', marginBottom: '0.5rem' }} 
-                    />
-                ))}
-            </div>
-            <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', // align items horizontally at the center
-                marginTop: 'auto', // push the this part to the bottom
-            }}>
-                <Button variant="outlined" color="primary" size="small" style={{ marginRight: '40px' }}>
-                    Read More
-                </Button>
-                <img src={recipe.profilePicture} alt="Profile" style={{ width: '30px', borderRadius: '50%' }} />
-            </div>
+export default function RecipeCard({ recipe }) {
+  const navigate = useNavigate();
+  const navigateTo = (data) => {
+    navigate("/selectedPost", { state: data });
+  };
+  return (
+    <Card
+      sx={{ maxWidth: 345 }}
+      style={{
+        height: "fit-content",
+        minHeight: "25vw",
+      }}
+    >
+      {/* Recipe Image */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        marginBottom="8px"
+        marginTop="8px"
+        style={{
+          maxHeight: "150px",
+        }}
+      >
+        <img src={recipe.img.split(" ").join("+")} width={200} height={150} />
+      </Box>
+
+      {/* Card Body */}
+      <CardContent style={{ backgroundColor: "#e0f7d7" }}>
+        {/* Card Title */}
+        <Typography gutterBottom variant="h5" component="div">
+          {recipe.title}
+        </Typography>
+        {/* Tags Chips */}
+        <div>
+          {recipe.tags.map((tag) => (
+            <Chip
+              key={tag}
+              label={tag}
+              variant="outlined"
+              style={{ marginRight: "0.5rem", marginBottom: "0.5rem" }}
+            />
+          ))}
         </div>
-    );
-};
-
-export default RecipeCard;
+      </CardContent>
+      <div>
+        <Box display="flex" justifyContent="space-between">
+          {/* Read More Button */}
+          <CardActions>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              style={{ marginRight: "40px" }}
+              onClick={() => navigateTo(recipe)}
+            >
+              Read More
+            </Button>
+          </CardActions>
+        </Box>
+      </div>
+    </Card>
+  );
+}

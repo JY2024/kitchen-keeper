@@ -6,12 +6,10 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
-// import SelectedPost from "./pages/SelectedPost";
-import SelectedPost_demo from "./pages/SelectedPost_demo";
-import SocialPage from "./pages/SocialPage"
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-
+import SelectedPost from "./pages/SelectedPost";
+import SocialPage from "./pages/SocialPage";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function Logout() {
   localStorage.clear();
@@ -39,12 +37,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route path="*" element={<NotFound />}></Route>
-        <Route
-          path="/selectedPost_demo"
-          element={
-              <SelectedPost_demo />
-          }
-        ></Route>
+        <Route path="/selectedPost" element={<SelectedPost />}></Route>
         <Route path="/social" element={<SocialPage />}></Route>
       </Routes>
     </BrowserRouter>

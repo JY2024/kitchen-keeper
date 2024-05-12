@@ -1,23 +1,87 @@
 import React, { useState, useEffect, useRef } from "react";
 import api from "../api";
-// components
-import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
 // visual
-import { Grid, Button, Typography, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import { Grid, Button, Typography, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, Select, MenuItem, Box} from '@mui/material';
 import Slider from 'react-slick'; // for recipe carousel
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'; // right arrow icon
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'; // right arrow icon
+
 import ChipInput from 'material-ui-chip-input'
+import SearchIcon from '@mui/icons-material/Search';
+import Navbar from "../components/Navbar"
+
+//Encodes an image as a base64 string
+//encodeImageAsURL(file): string
+const encodeImageAsURL = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    return new Promise((resolve, reject) => {
+        reader.onloadend = () => {
+            resolve(reader.result);
+        }
+    });
+}
 
 export default function SocialPage() {
-    // const [searchQuery, setSearchQuery] = useState(""); 
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [allRecipes, setAllRecipes] = useState([]);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [recipes, setRecipes] = useState([]);
     const [ingredMultiline, setMultiline] = useState("");
+    const [title, setTitle] = useState("");
+    const [tags, setTags] = useState([]);
+    const [description, setDescription] = useState("");
+    const [ingredients, setIngredients] = useState([]);
+    const [instructions, setInstructions] = useState("");
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [filterOption, setFilterOption] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [popularTags, setPopularTags] = useState([]);
+
+    const searchRef = useRef();
+
 
     useEffect(() => {
-        getRecipes();
+        document.body.style = 'background: #f8fff5;';
+        getAllRecipes();
     }, []);
+
+    const findPopularTags = () => {
+        let all_tags_and_counts = [];
+        const tags_seen = [];
+        allRecipes.forEach(recipe => {
+            const ingreds = recipe.tags; // array of strings
+            ingreds.forEach(ing => {
+                if (!(tags_seen.includes(ing))) {
+                    all_tags_and_counts.push([ing, 0]);
+                    tags_seen.push(ing);
+                }
+                all_tags_and_counts.find(sub_arr => sub_arr[0] === ing)[1] += 1;
+            });
+        });
+        all_tags_and_counts = all_tags_and_counts.sort((arr1, arr2) => {
+            return arr2[1] - arr1[1];
+    });
+        const tags_to_add = [];
+        for (let i = 0; i <= 5; i++) {
+            if (i < all_tags_and_counts.length) {
+                tags_to_add.push(all_tags_and_counts[i][0]);
+            }
+        }
+        setPopularTags(tags_to_add);
+    };
+
+    const getAllRecipes = () => {
+        api
+            .get("/api/recipes/")
+            .then((res) => res.data)
+            .then((data) => {
+                setRecipes(data);
+                setAllRecipes(data);
+            })
+            .then(() => findPopularTags())
+            .catch((err) => alert(err));
+    };
 
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -27,91 +91,59 @@ export default function SocialPage() {
         setDialogOpen(false);
     };
 
-    const handleRecipePost = () => {
-
+    const handlePostCreation = (e) => {
+        createRecipe(e);
     }
 
-    const getRecipes = () => {
-        api
-            .get("/api/recipes/")
-            .then((res) => res.data)
-            .then((data) => {
+    const getRecipesFiltered = (filterOption, searchQuery) => {
+        if (searchQuery === "") {
+            getAllRecipes();
+        } else {
+            let data = allRecipes;
+            searchQuery = searchQuery.toLowerCase().split(" ");
+            if (filterOption === "title") {
+                const title_check = (title_string) => searchQuery.some(queryTerm => title_string.toLowerCase().includes(queryTerm));
+                setRecipes(data.filter(recipe => title_check(recipe.title)));
+            } else if (filterOption === "tags") {
+                const tag_check = (tag_arr) => searchQuery.some(queryTerm => tag_arr.includes(queryTerm));
+                setRecipes(data.filter(recipe => tag_check(recipe.tags)));
+            } else if (filterOption === "ingredients") {
+                const ingred_check = (ingred_arr) => searchQuery.some(queryTerm => {
+                    return ingred_arr.includes(queryTerm)
+                });
+                setRecipes(data.filter(recipe => {
+                    let ingreds = recipe.ingredients;
+                    let ingreds2 = [];
+                    ingreds.forEach((ingred_str) => {
+                        ingreds2 = ingreds2.concat(ingred_str.split(" "));
+                    }); 
+                    return ingred_check(ingreds2);
+                }));
+            } else {
                 setRecipes(data);
-            })
-            .catch((err) => alert(err));
-    };
+            }
+            // fix carousel display
+        }
+        
+    }
 
     const createRecipe = (e) => {
         e.preventDefault();
         api
-          .post("/api/recipes/", {
-            "title": "test",
-            "tags": ["tag1", "tag2"],
-            "description": "dckjnjdncjknd",
-            "ingredients": ["ing1", "ing2"],
-            "instructions": "Just add water",
-            "unsplash_url": "https://unsplash.com/photos/cooked-dish-on-table-k6VCwawxgMg"
-        })
+            .post("/api/recipes/", { "title": title, "tags": tags, "description": description, "ingredients": ingredients, "instructions": instructions, "img": selectedImage})
           .then((res) => {
             if (res.status === 201) alert("Recipe created!");
             else alert("Failed to make recipe.");
-            getRecipes();
+            handleClose();
+          })
+          .then(() => {
+            getAllRecipes();
           })
           .catch((err) => alert(err));
       };
     
     
-    
-    // const [startIndex, setStartIndex] = useState(0);
-
-    // const getRecipes = () => {
-    //     api
-    //     .get("/api/recipes/")
-    //     .then((res) => res.data)
-    //     .then((data) => setRecipes(data))
-    //     .catch((err) => alert(err));
-    // };
-
-    // const createRecipe = (e) => {
-    //     e.preventDefault();
-    //     api
-    //       .post("/api/recipes/", { title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"})
-    //       .then((res) => {
-    //         if (res.status === 201) alert("Note created!");
-    //         else alert("Failed to make note.");
-    //         // getRecipes();
-    //       })
-    //       .catch((err) => alert(err));
-    //   };
-
-    // const createRecipe = (e) => {
-    //     e.preventDefault();
-    //     let body = JSON.stringify({ title: "Kimchi Stew", description: "This is the best stew ever!", ingredients: ["kimchi", "water"], instructions: "Put the kimchi in the water and heat it up", tags: ["Spicy", "Stew"], author: "Jay"});
-    //     console.log(body);
-    //     api
-    //     .post("/api/recipes/", body, {
-    //         accept: "application/json",
-    //         mode: "cors"
-    //     })
-    //     .then((res) => {
-    //         console.log(res.status);
-    //         console.log(res.body);
-    //         if (res.status === 201) alert("Recipe created!");
-    //         else alert("Failed to make recipe.");
-    //         // getRecipes();
-    //     })
-    //     .catch((err) => alert(err));
-    // };
-
-    // -------------------------------DUMMY DATA-------------------------------------------
-
-    const trendingTags = ["Curry", "Shrimp", "Pork"];
-
-    // const recipes = [
-    //     { id: 1, title: "Kimchi Stew", tags: ["Stew", "Spicy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
-    //     { id: 2, title: "Spaghetti", tags: ["Carbs", "Healthy"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" },
-    //     { id: 3, title: "Strawberry Ice Cream", tags: ["Dessert", "Fruit"], image: "../assets/kimchi-stew.jpg", profilePicture: "../assets/profile.jpg" }
-    // ];
+    const [startIndex, setStartIndex] = useState(0);
 
     // ------------------ SLIDER (food carousel) -------------------------------------
     const sliderRef = useRef(null); // reference for slider component
@@ -120,41 +152,86 @@ export default function SocialPage() {
     const onClickNext = () => {
         sliderRef.current.slickNext(); // slide to next slides
     };
+    const onClickPrev = () => {
+        sliderRef.current.slickPrev(); // slide to next slides
+    };
+
 
     const sliderSettings = {
-        dots: true,
+        dots: false,
         infinite: false,
         speed: 500,
         slidesToShow: 3, // Show 3 slides at a time
         slidesToScroll: 3,
     };
 
-    // ------------------ SEARCHING --------------------------------------------------
-    // const onSearchChange = (e) => {
-    //     setSearchQuery(e.target.value);
-    // };
+    const handleClickTags = () => {
+        findPopularTags();
+    }
 
-    // const onSearchClick = () => {
-        
-    // };
+    const handleSearch = () => {
+        let query = searchRef.current.value;
+        getRecipesFiltered(filterOption, query);
+    }
 
-    // // ------------------ POSTING --------------------------------------------------
-    // const handleCreatePostClick = () => {
-        
-    // };
+    
+    function SearchBar() {
+        return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div>
+            <TextField
+                label={<Typography variant="body1" fontStyle="italic">Search for posts...</Typography>}
+                variant="outlined"
+                onChange={() => {}} // setSearchQuery
+                fullWidth
+                InputProps={{
+                    style: {
+                    color: "gray",
+                    borderRadius: 20
+                    }
+                }}
+                inputRef={searchRef} 
+            />
+            </div>
+            <IconButton onClick={handleSearch} size="large">
+            <SearchIcon />
+            </IconButton>
+        </div>
+        );
+    }
 
     return (
         <div style={{ paddingTop: '20px' }}>
-            <Grid container spacing={10}>
+            <Navbar />
+            <Grid container spacing={3}>
                 {/* Top Row (Row 1) */}
                 <Grid item xs={12}>
                     {/* Search Bar */}
                     <Grid container spacing={1} alignItems="center">
-                        <Grid item xs={8}>
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={3}>
+                            Filter by:
+                            <FormControl fullWidth>
+                            <InputLabel id="search-select-label">Search by...</InputLabel>
+                            <Select
+                                labelId="search-select-label"
+                                value={filterOption}
+                                label="Filter by:"
+                                onChange={(e) => {
+                                    setFilterOption(e.target.value);
+                                }}
+                            >
+                                <MenuItem value={"title"}>Title</MenuItem>
+                                <MenuItem value={"tags"}>Tags</MenuItem>
+                                <MenuItem value={"ingredients"}>Ingredients</MenuItem>
+                            </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={4}>
                             <SearchBar></SearchBar>
                         </Grid>
                         {/* Create Post Button */}
-                        <Grid item xs={4} container>
+                        <Grid item xs={2} container>
                             <Button 
                                 variant="contained"
                                 style={{ backgroundColor: 'green', color: 'white', fontStyle: 'italic' }}
@@ -167,29 +244,45 @@ export default function SocialPage() {
                                 <DialogTitle>Create Post</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>Title</DialogContentText>
-                                    <TextField/>
+                                    <TextField onChange={(e) => setTitle(e.target.value)}/>
                                     <DialogContentText>Add tags here...</DialogContentText>
                                     <ChipInput
-                                        defaultValue={['foo', 'bar']}
-                                        onChange={(chips) => {}}
+                                        defaultValue={[]}
+                                        onChange={(chips) => setTags(chips)} // chips is array of strings
                                     />
                                     <DialogContentText>Add description here...</DialogContentText>
-                                    <TextField/>
+                                    <TextField onChange={(e) => setDescription(e.target.value)}/>
                                     <DialogContentText>Add ingredients here...</DialogContentText>
                                     <TextField
                                         multiline
-                                        value={ingredMultiline}
-                                        onChange={e => setMultiline(e.target.value)}
+                                        onChange={e => {
+                                            let ingred_list = e.target.value;
+                                            setIngredients(ingred_list.split("\n"));
+                                        }}
                                     />
                                     <DialogContentText>Add instructions here...</DialogContentText>
-                                    <TextField/>
+                                    <TextField 
+                                    multiline
+                                    onChange={(e) => setInstructions(e.target.value)}
+                                    rows={7}
+                                    maxRows={Infinity}/>
                                     <DialogContentText>Upload an image</DialogContentText>
+                                    <input
+                                        type="file"
+                                        name="myImage"
+                                        onChange={(event) => {
+                                            encodeImageAsURL(event.target.files[0]).then((result) => {
+                                                console.log("result " + result);
+                                                setSelectedImage(result);
+                                            }).catch(console.error);
+                                        }}
+                                    />
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={handleClose}>
                                         Cancel
                                     </Button>
-                                    <Button onClick={handleRecipePost}>
+                                    <Button onClick={handlePostCreation}>
                                         Post
                                     </Button>
                                 </DialogActions>
@@ -199,14 +292,23 @@ export default function SocialPage() {
                 </Grid>
 
                 {/* Second Row */}
-                <Grid item xs={3}>
-                    {/* Trending Tags Section */}
+                <Grid item xs={1}></Grid>
+                <Grid item xs={2}>
+                    {/* Popular Tags Section */}
                     <div style={{ backgroundColor: '#f5f5f5', borderRadius: '8px', padding: '1rem', maxWidth: '150px'}}>
-                        <Typography variant="h6" gutterBottom>
-                            Trending tags
-                        </Typography>
+                        <Box display="flex" justifyContent="center">
+                            <Button 
+                                    variant="h6"
+                                    style={{ backgroundColor: 'gray', color: 'white', fontStyle: 'italic', marginBottom: "10px" }}
+                                    onClick={handleClickTags}
+                                >
+                                <Typography variant="h6" gutterBottom fontSize="14px">
+                                    See Popular Tags
+                                </Typography>
+                            </Button>
+                        </Box>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            {trendingTags.map(tag => (
+                            {popularTags.map(tag => (
                                 <Chip 
                                     key={tag} 
                                     label={tag} 
@@ -218,6 +320,12 @@ export default function SocialPage() {
                     </div>
                 </Grid>
                 <Grid item xs={9} style={{ position: 'relative' }}>
+                    <IconButton 
+                        style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} 
+                        onClick={onClickPrev}
+                    >
+                        <KeyboardArrowLeftIcon />
+                    </IconButton>
                     {/* Recipe Carousel Section */}
                     <Typography variant="h6" gutterBottom>
                         Explore recipes!
@@ -233,7 +341,7 @@ export default function SocialPage() {
                     {/* Right Arrow IconButton */}
                     <IconButton 
                         style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }} 
-                        onClick={() => {}}
+                        onClick={onClickNext}
                     >
                         <KeyboardArrowRightIcon />
                     </IconButton>

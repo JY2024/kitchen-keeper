@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer, CommentSerializer, RecipeSerializer
+from .serializers import UserSerializer, NoteSerializer, PostAndCommentSerializer, RecipeSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from.models import Note, Recipe, Comment
+from.models import Note, Recipe, PostAndComment
 # import view sets from the REST framework
 from rest_framework import viewsets
  
@@ -49,13 +49,12 @@ class NoteDelete(generics.DestroyAPIView):
         return Note.objects.filter(author=user)
     
 class CommentListCreate(generics.ListCreateAPIView):
-    serializer_class = CommentSerializer
+    serializer_class = PostAndCommentSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        # p_id = self.request.post_id
-        return Comment.objects
+        post_id = self.request.GET["post_id"]
+        return PostAndComment.objects.filter(post_id=post_id)
     
     def perform_create(self, serializer):
         if serializer.is_valid():
@@ -64,12 +63,12 @@ class CommentListCreate(generics.ListCreateAPIView):
             print(serializer.errors)
 
 class CommentDelete(generics.DestroyAPIView):
-    serializer_class = CommentSerializer
+    serializer_class = PostAndCommentSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return Comment.objects.filter(author=user)
+        return PostAndComment.objects.filter(author=user)
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -84,7 +83,7 @@ class RecipeCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Recipe.objects.filter(author=user)
+        return Recipe.objects
         
     def perform_create(self, serializer):
         if serializer.is_valid():
