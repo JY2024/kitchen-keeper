@@ -45,6 +45,9 @@
 
 .items-center {
     align-items: center;
+    justify-content: space-between;
+    display: flex;
+    list-style-type: none;
 }
 
 .space-x-4 > * + * {
