@@ -10,13 +10,29 @@ Kitchen Keeper is a website that helps users keep track of the contents of their
 
 Kitchen Keeper was made using React, Django, and OpenAI API.
 
+## Dependencies
+
+Before trying to run the application, make sure to have these installed:
+- npm
+- python
+
 ## Installation
 
-## Configuration
+1. Download the zipped release
+2. Unzip the folder
+3. Open your terminal
+4. (Optional) create a virtual environment
+Running the frontend
+5. Assuming you're in kitchen-keeper, run command "cd frontend"
+6. Run command "npm run dev"
+7. Follow the link to see the webpage
+Running the server
+8. Run command "cd ../backend"
+9. Run command "python manage.py runserver"
 
 ## Contributions
-- Tengzhi Zhuo: 
-- Haochen Ren: 
-- Hung Nguyen: 
-- James Leone:
-- Jiaqi Ye:
+- Tengzhi Zhuo: Worked on Figma design, created selected recipe page
+- Haochen Ren: Worked on Figma design, created settings page
+- Hung Nguyen: Worked on Figma design, created meal generation page
+- James Leone: Worked on Figma design, created main page for inputting items and navigation bar
+- Jiaqi Ye: Worked on Figma design, created social page
