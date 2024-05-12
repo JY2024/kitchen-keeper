@@ -23,12 +23,14 @@ Before trying to run the application, make sure to have these installed:
 3. Open your terminal
 4. (Optional) create a virtual environment
 Running the frontend
-5. Assuming you're in kitchen-keeper, run command "cd frontend"
+5. cd into the frontend folder
 6. Run command "npm run dev"
 7. Follow the link to see the webpage
 Running the server
 8. Run command "cd ../backend"
 9. Run command "python manage.py runserver"
+
+Note for graders: Put the .env file (containing the database information) in backend folder.
 
 ## Contributions
 - Tengzhi Zhuo: Worked on Figma design, created selected recipe page
