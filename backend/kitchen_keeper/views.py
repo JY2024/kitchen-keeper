@@ -61,7 +61,7 @@ class RecipeCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Recipe.objects.filter(author=user)
+        return Recipe.objects
         
     def perform_create(self, serializer):
         if serializer.is_valid():
