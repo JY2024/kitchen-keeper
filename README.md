@@ -25,7 +25,7 @@ Before trying to run the application, make sure to have these installed:
 5. cd into the kitchen-keeper directory
 Running the frontend React server
 6. cd into the frontend folder
-7. Run the command "npm install --legacy-peer-deps"
+7. Run the command "npm install --legacy-peer-deps" to install dependencies
 8. Run command "npm run dev"
 9. Follow the link to see the webpage
 Running the server
@@ -36,11 +36,13 @@ Running the server
       - "python3 manage.py migrate"
 13. Run command "python manage.py runserver"
 
-Note for graders: Put the .env file (containing the database information) in backend folder.
+# Configuration
+Note for graders: Put the .env file (containing the database information) in backend folder. We will email it to you.
+1. Need to use the .env file that will be emailed to the graders, which needs to be added to the root backend directory to properly interact with the Postgres data on ElephantSQL.  The .env file will contain the database hostname, port number to connect to, user, name, and password as environment variables.
 
 ## Contributions
 - Tengzhi Zhuo: Worked on Figma design, created selected recipe page
 - Haochen Ren: Worked on Figma design, created settings page
 - Hung Nguyen: Worked on Figma design, created meal generation page
-- James Leone: Worked on Figma design, created main page for inputting items and navigation bar
-- Jiaqi Ye: Worked on Figma design, created social page
+- James Leone: Worked on Figma design, created main page for inputting items and navigation bar, and helped create readme.md file
+- Jiaqi Ye: Worked on Figma design, created social page, added unit tests and helped create readme.md file
