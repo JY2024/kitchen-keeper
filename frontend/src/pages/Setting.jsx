@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useNavigate} from "react-router-dom";
+import Avatar from '@mui/material/Avatar';
 
 function SettingPage() {
   const [settings, setSetting] = react.useState([]);
@@ -70,7 +71,7 @@ function SettingPage() {
 
   return (
     <div className="settings-container"> 
-      <h2>Info</h2>
+      <h2></h2>
       <Box
         component="form"
         onSubmit={createSetting}
@@ -80,7 +81,12 @@ function SettingPage() {
         noValidate
         autoComplete="off"
       >
-        <div>
+        <div className="setting-section">
+          <Avatar
+            alt="Haochen"
+            src="https://images.unsplash.com/photo-1421790500381-fc9b5996f343?ixlib=rb-4.0.3"
+            sx={{ width: 100, height: 100 }}
+          />
           <TextField
             required
             id="Full_Name-required"
@@ -99,6 +105,8 @@ function SettingPage() {
               setBio(event.target.value);
             }}
             disabled = {!isEditing}
+            multiline
+            rows= {2}
           />
           <TextField
             required
@@ -139,12 +147,14 @@ function SettingPage() {
             }}
             disabled = {!isEditing}
           />
+        </div>
+        <div className="button-section">
           {isEditing && <input type="submit" value="Submit"></input>}
+          {!isEditing && <Button onClick={() => setIsEditing(true)}>Change</Button>}
+          {!isEditing && <Button onClick={() => navigateTo()}>Log Out</Button>}
         </div>
       </Box>
-      {!isEditing && <Button onClick={() => setIsEditing(true)}>Change</Button>}
-      <Button onClick={() => navigateTo()}>Log Out</Button>
-    </div>
+  </div>
   );
 }
   
