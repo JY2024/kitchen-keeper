@@ -6,6 +6,9 @@ from .models import Note
 # import the todo data model
 from .models import KitchenKeeper
 
+# import the FoodItem model
+from .models import FoodItem
+
 # create a serializer class
 class KitchenKeeperSerializer(serializers.ModelSerializer):
  
@@ -29,4 +32,10 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ["id", "title", "content", "created_at", "author"]
+        extra_kwargs = {"author": {"read_only": True}}
+
+class FoodItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FoodItem
+        fields = ["id", "name", "group", "exp_date", "quantity", "unsplash_url", "desc", "author"]
         extra_kwargs = {"author": {"read_only": True}}

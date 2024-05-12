@@ -10,7 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@google/generative-ai": "^0.10.0",
+=======
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.16",
+    "@mui/material": "^5.15.17",
+    "@mui/x-charts": "^7.3.1",
+>>>>>>> 39526f747c7a81ca92c8b9175d236b7b773d7681
     "axios": "^1.6.7",
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
