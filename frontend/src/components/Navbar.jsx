@@ -37,7 +37,7 @@ const Navbar = () => {
   const navItems = ["Posts", "Meal Generator"];
 
   // links work, just need to route them to appropriate page
-  const navLinks = ["/", "https://google.com"];
+  const navLinks = ["/", "/meals"];
 
   const linkStyle = {
     textDecoration: "none",

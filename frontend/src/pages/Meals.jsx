@@ -8,10 +8,30 @@ import "../styles/Meals.css"
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 const MODEL_NAME = "gemini-1.5-pro-latest";
-const API_KEY = "AIzaSyBihsDXam5maRnb4hDjF_ay_F1VBL2dZeo";
+const API_KEY = "AIzaSyCjScbaLni695WrkNIFsJHC4BayQmIzn-4";
 
 
 function Meals() {
+
+  const [ingredients, setIngredients] = useState([]);
+  useEffect(() => {
+    const abortController = new AbortController();
+    const fetchData = async () => {
+      await api.get("/api/food_items/", {
+        signal: abortController.signal
+      }) .then((res) => res.data)
+      .then((data) => {
+        data.forEach(item => addNewIngredient(item));
+      })
+      .catch((err) => alert(err));
+    };
+    fetchData();
+  
+    return () => {
+      abortController.abort()
+    }
+  }, [])
+
   const [isRecipeVisible, setIsRecipeVisible] = useState(false);
   const [sampleRecipes, setSampleRecipes] = useState([]);
   async function runChat(prompt) {
@@ -83,7 +103,8 @@ function Meals() {
       ],
     });
 
-    const result = await chat.sendMessage(prompt);
+    // const result = await chat.sendMessage(prompt);
+    const result = await chat.sendMessage("Hello" + prompt);
     const response = result.response;
     setIsRecipeVisible(true);
     const responseText = response.text();
@@ -101,8 +122,6 @@ function Meals() {
       instructions: recipe.instructions,
     }));
     setSampleRecipes(sampleRecipes);
-    console.log(sampleRecipes);
-    console.log(JSON.parse(jsonText));
   }
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -118,13 +137,14 @@ function Meals() {
     setNewIngredientModalOpen(false);
   };
 
-  const [ingredients, setIngredients] = useState([]);
-
   const addNewIngredient = (newIngredient) => {
     newIngredient.quantityUsed = 0;
     newIngredient.isSelected = false;
-    setIngredients([...ingredients, newIngredient]);
-    setSelectedItems([...selectedItems, newIngredient]);
+    setIngredients(prevIngredients => {
+      const updatedIngredients = [...prevIngredients, newIngredient];
+      setSelectedItems([...selectedItems, newIngredient]);
+      return updatedIngredients;
+    });
     closeNewIngredientModal();
   };
 
@@ -155,22 +175,19 @@ function Meals() {
       return ingredient;
     });
     selectedIngredients = selectedIngredients.filter(ingredient => ingredient.quantityUsed > 0);
-    // let systemPrompt = "Generate JSON format for at least three meals. Each meal should include the following details: Vegetarian status (Yes/No), Preparation time in minutes, Dish name, Description of the dish, Instructions on how to make the dish.";
     let prompt = "I have ";
     selectedIngredients.forEach((ingredient, index) => {
-      prompt += ingredient.quantityUsed + " " + ingredient.title;
+      prompt += ingredient.quantityUsed + " " + ingredient.name;
       if (index < selectedIngredients.length - 1) {
         prompt += ", ";
       }
     }
     );
     prompt += ". What can I make with these ingredients?";
-    console.log(prompt);
     return prompt;
   }
 
   return (
-    
     <div className="flex min-h-screen">
       <div className="w-two-thirds p-8 bg-zinc-100">
       {!isRecipeVisible ? (
@@ -191,14 +208,14 @@ function Meals() {
         
       {!isRecipeVisible ? (
         <ul className="space-y-6">
-        {ingredients.filter(meal => (selectedType === 'all' || meal.type === selectedType)).map((meal, index) => (
+        {ingredients.filter(meal => (selectedType === 'all' || meal.group === selectedType)).map((meal, index) => (
           <li key={index}>
             <div className="flex items-center space-x-4">
-              <img src={meal.imgSrc} alt={meal.altText} />
+              <img src={meal.unsplash_url} alt={meal.name} />
               <div>
-                <h2 className="font-bold">{meal.title}</h2>
-                <p>Expiration Date: {meal.expirationDate}</p>
-                <p>Quantity Available: {meal.quantityAvailable}</p>
+                <h2 className="font-bold">{meal.name}</h2>
+                <p>Expiration Date: {meal.exp_date}</p>
+                <p>Quantity Available: {meal.quantity}</p>
               </div>
               <div className="flex items-center space-x-2">
                 {/* <input type="checkbox" /> */}
@@ -257,26 +274,22 @@ function Meals() {
             <form onSubmit={(e) => {
               e.preventDefault();
               addNewIngredient({
-                imgSrc: e.target.elements.imgSrc.value,
+                unsplash_url: e.target.elements.unsplash_url.value,
                 altText: e.target.elements.altText.value,
-                title: e.target.elements.title.value,
-                expirationDate: e.target.elements.expirationDate.value,
-                quantityAvailable: e.target.elements.quantityAvailable.value,
-                type: e.target.elements.type.value,
-                calories: e.target.elements.calories.value,
-                sugar: e.target.elements.sugar.value,
-                otherInfo: e.target.elements.otherInfo.value,
+                name: e.target.elements.name.value,
+                exp_date: e.target.elements.exp_date.value,
+                quantity: e.target.elements.quantity.value,
+                group: e.target.elements.group.value,
+                desc : e.target.elements.desc.value
               });
             }}>
-              <input className="form-input" name="imgSrc" placeholder="Image Source" />
+              <input className="form-input" name="unsplash_url" placeholder="Image Source" />
               <input className="form-input" name="altText" placeholder="Alt Text" />
-              <input className="form-input" name="title" placeholder="Title" />
-              <input className="form-input" name="expirationDate" placeholder="Expiration Date" />
-              <input className="form-input" name="quantityAvailable" placeholder="Quantity Available" />
-              <input className="form-input" name="type" placeholder="Type" />
-              <input className="form-input" name="calories" placeholder="Calories" />
-              <input className="form-input" name="sugar" placeholder="Sugar" />
-              <input className="form-input" name="otherInfo" placeholder="Other Info" />
+              <input className="form-input" name="name" placeholder="Name" />
+              <input className="form-input" name="exp_date" placeholder="Expiration Date" />
+              <input className="form-input" name="quantity" placeholder="Quantity Available" />
+              <input className="form-input" name="group" placeholder="Type" />
+              <input className="form-input" name="desc" placeholder="Description" />
               <button className="form-button" type="submit">Add Ingredient</button>
             </form>
           </div>
@@ -314,7 +327,7 @@ function Meals() {
           <div className="selected-item">
             <img src={ingredients[ingredients.length - 1].imgSrc} alt={ingredients[ingredients.length - 1].altText}/>
             <div className="item-details">
-              <span>{ingredients[ingredients.length - 1].title}</span>
+              <span>{ingredients[ingredients.length - 1].name}</span>
               <div className="flex items-center space-x-2">
               <button className="px-2" onClick={() => {
                   const updatedIngredients = ingredients.map((item) => 
