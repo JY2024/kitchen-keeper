@@ -14,11 +14,6 @@ const API_KEY = "AIzaSyBihsDXam5maRnb4hDjF_ay_F1VBL2dZeo";
 function Meals() {
   const [isRecipeVisible, setIsRecipeVisible] = useState(false);
   const [sampleRecipes, setSampleRecipes] = useState([]);
-  // const sampleRecipes = [
-  //   { imgSrc: 'https://via.placeholder.com/150', altText: 'Recipe 1', description: 'This is recipe 1', title: 'Recipe 1'},
-  //   { imgSrc: 'https://via.placeholder.com/150', altText: 'Recipe 2', description: 'This is recipe 2', title: 'Recipe 2'},
-  //   { imgSrc: 'https://via.placeholder.com/150', altText: 'Recipe 3', description: 'This is recipe 3', title: 'Recipe 3'},
-  // ];
   async function runChat(prompt) {
     console.log("Running chat");
     const genAI = new GoogleGenerativeAI(API_KEY);
@@ -110,7 +105,6 @@ function Meals() {
     console.log(JSON.parse(jsonText));
   }
   const [selectedItems, setSelectedItems] = useState([]);
-  const [recipes, setRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [selectedType, setSelectedType] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,7 +146,7 @@ function Meals() {
 
   const types = ["all", "fruits", "meat", "veggies", "diary"];
 
-  function createPrompt() {
+  function createPrompt() { 
     let selectedIngredients = ingredients.filter(ingredient => ingredient.isSelected);
     selectedIngredients = selectedIngredients.map(ingredient => {
       if (ingredient.quantityUsed <= 0) {
