@@ -211,7 +211,7 @@ function Meals() {
         {ingredients.filter(meal => (selectedType === 'all' || meal.group === selectedType)).map((meal, index) => (
           <li key={index}>
             <div className="flex items-center space-x-4">
-              <img src={meal.unsplash_url} alt={meal.name} onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/100"; }}/>
+              <img src={meal.unsplash_url} alt={meal.name} onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/100"; }} style={{ maxWidth: '100px', maxHeight: '100px' }}/>
               <div>
                 <h2 className="font-bold">{meal.name}</h2>
                 <p>Expiration Date: {meal.exp_date}</p>
@@ -325,7 +325,7 @@ function Meals() {
         <h2 className="font-bold mb-2">Selected</h2>
         {ingredients.length > 0 && (
           <div className="selected-item">
-            <img src={ingredients[ingredients.length - 1].unsplash_url} alt={ingredients[ingredients.length - 1].altText} onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/100"; }}/>
+            <img src={ingredients[ingredients.length - 1].unsplash_url} alt={ingredients[ingredients.length - 1].altText} onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/100"; }} style={{ maxWidth: '100px', maxHeight: '100px' }}/>
             <div className="item-details">
               <span>{ingredients[ingredients.length - 1].name}</span>
               <div className="flex items-center space-x-2">
