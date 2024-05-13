@@ -1,0 +1,122 @@
+{
+    "recipes": [
+        {
+            "title": "Best Pho Ever!",
+            "ingredients": [
+                "2 packs of noodles",
+                "3 limes",
+                "1 gallon of water"
+            ],
+            "instructions": "Throw the noodles into the water. Squeeze all the juice from the limes into the pot as well. Don't bother turning the stove on -- it is better served cold!",
+            "tags": [
+                "vietnamese",
+                "asian",
+                "noodles",
+                "soup"
+            ],
+            "description": "Trust me, this is what you're looking for."
+        },
+        {
+            "title": "Bacon Double Big Mac",
+            "ingredients": [
+                "40 slices of bacon",
+                "10 slices of cheese",
+                "pickles",
+                "2 breads"
+            ],
+            "instructions": "Put everything in between the breads. Enjoy!",
+            "tags": [
+                "burger",
+                "fast food"
+            ],
+            "description": "Are you working on your problem set at 3 AM and suddenly craving McDonald's? Are you tired and just wanna eat some junk food? Forget about DoorDash, this is the perfect recipe for you!"
+        },
+        {
+            "title": "Sushi",
+            "ingredients": [
+                "3 avocados",
+                "10 rolls of seaweed"
+            ],
+            "instructions": "Peel the avocados, mash them all together in a bowl, and then wrap it all in 10 layers of seaweed.\nDelicious!",
+            "tags": [
+                "japanese",
+                "vegetarian",
+                "asian"
+            ],
+            "description": "This is the best sushi ever made! Perfect for vegetarians!"
+        },
+        {
+            "title": "Cantonese-Style Ribs",
+            "ingredients": [
+                "1 cup soy sauce",
+                "4 lbs pork spare ribs"
+            ],
+            "instructions": "Dump the soy sauce over the ribs and then cook on high heat for 3 hours.",
+            "tags": [
+                "chinese",
+                "asian",
+                "pork"
+            ],
+            "description": "Yummy"
+        },
+        {
+            "title": "Very Nice Fries!",
+            "ingredients": [
+                "5 potatoes",
+                "1 bottle of sauce"
+            ],
+            "instructions": "Cut the potatoes into strips and then pour the salt over them. Potatoes are optional.",
+            "tags": [
+                "fast food",
+                "salty"
+            ],
+            "description": "Are you hungry for some fries?"
+        },
+        {
+            "title": "a",
+            "ingredients": [],
+            "instructions": "",
+            "tags": [
+                "asian",
+                "fast food",
+                "noodles"
+            ],
+            "description": ""
+        },
+        {
+            "title": "b",
+            "ingredients": [],
+            "instructions": "",
+            "tags": [
+                "asian",
+                "fast food",
+                "noodles",
+                "soup"
+            ],
+            "description": ""
+        }
+    ],
+    "foodItems": [
+        {
+            "name": "Carrot",
+            "group": "Vegetables",
+            "exp_date": "5/12/24",
+            "quantity": 3,
+            "desc": "These are carrots"
+        },
+        {
+            "name": "Tomato",
+            "group": "Fruits",
+            "exp_date": "5/12/24",
+            "quantity": 5,
+            "desc": "These are tomatoes"
+        },
+        {
+            "name": "Orange",
+            "group": "Fruits",
+            "exp_date": "5/12/24",
+            "quantity": 20,
+            "desc": "These are oranges"
+        }
+    ]
+}
