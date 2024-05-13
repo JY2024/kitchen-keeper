@@ -12,6 +12,10 @@ function Form({ route, method }) {
   const navigate = useNavigate();
   const name = method === "login" ? "Login" : "Register";
 
+  const navigateTo = () => {
+    navigate("/register");
+  };
+
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -53,6 +57,15 @@ function Form({ route, method }) {
       <button className="form-button" type="submit">
         {name}
       </button>
+      {name === "Login" ? (
+        <button
+          className="form-button"
+          type="submit"
+          onClick={() => navigateTo()}
+        >
+          Register
+        </button>
+      ) : null}
     </form>
   );
 }

@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer, PostAndCommentSerializer, RecipeSerializer
+from .serializers import UserSerializer, NoteSerializer, PostAndCommentSerializer, RecipeSerializer, SettingSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from.models import Note, Recipe, PostAndComment
+from.models import Note, Recipe, PostAndComment, Setting
 # import view sets from the REST framework
 from rest_framework import viewsets
  
@@ -84,7 +84,7 @@ class RecipeCreate(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         return Recipe.objects
-        
+    
     def perform_create(self, serializer):
         if serializer.is_valid():
             serializer.save(author=self.request.user)
@@ -98,3 +98,36 @@ class RecipeDelete(generics.DestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Recipe.objects.filter(author=user)
+    
+
+class SettingGet(generics.ListCreateAPIView):
+    serializer_class = SettingSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        user_id = self.request.GET["user_id"]
+        latest_setting = Setting.objects.filter(author=user_id).order_by('created_at').last()
+        return [latest_setting]      
+
+class SettingCreate(generics.ListCreateAPIView):
+    serializer_class = SettingSerializer
+    permission_classes = [IsAuthenticated]  
+    
+    def get_queryset(self):
+        user = self.request.user
+        latest_setting = Setting.objects.filter(author=user).order_by('created_at').last()
+        return [latest_setting] if latest_setting else []
+    
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+class SettingDelete(generics.DestroyAPIView):
+    serializer_class = SettingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Setting.objects.filter(author=user)

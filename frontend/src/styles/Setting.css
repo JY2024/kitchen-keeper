@@ -1,0 +1,79 @@
+body {
+  background-color: #e4e8e0;
+}
+.settings-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto; 
+  padding: 10px;
+  margin-top: 5%;
+}
+
+.setting-box {
+    padding: 10px;
+    width: 35%;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Style for the individual settings */
+.setting-section {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow:0px 2px 6px rgba(0, 0, 0, 0.1);
+  gap: 45px;
+}
+
+.setting-text {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #131313;
+}
+
+.setting-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.button-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button-section input[type="submit"],
+.button-section .MuiButton-root {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-section input[type="submit"]:hover,
+.button-section .MuiButton-root:hover {
+  background-color: #0056b3;
+}
+
+.button-section .MuiButton-root:nth-child(2) {
+  background-color: #28a745;
+}
+
+.button-section .MuiButton-root:nth-child(2):hover {
+  background-color: #218838;
+}
+
+.button-section .MuiButton-root:nth-child(3) {
+  background-color: #dc3545;
+}
+
+.button-section .MuiButton-root:nth-child(3):hover {
+  background-color: #c82333;
+}

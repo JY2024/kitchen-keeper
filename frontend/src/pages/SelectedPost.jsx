@@ -16,7 +16,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
+import Avatar, { avatarClasses } from "@mui/material/Avatar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -26,6 +26,8 @@ function SelectedPost() {
   const data = location.state;
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
+  const [usernames, setUsernames] = useState({});
+
   const post = {
     post_id: data.id,
     title: data.title,
@@ -43,7 +45,21 @@ function SelectedPost() {
     api
       .get(`/api/comments/?post_id=${post.post_id}`)
       .then((res) => res.data)
-      .then((data) => setComments(data))
+      .then((data) => {
+        setComments(data);
+        data.map((comment) => {
+          api
+            .get(`/api/settings/username/?user_id=${comment.author}`)
+            .then((res) => res.data)
+            .then((data) => {
+              if (data.length != 0) {
+                const { name, bio, gender, sex, username, email } = data[0];
+                usernames[comment.author] = username;
+              }
+            })
+            .catch((err) => alert(err));
+        });
+      })
       .catch((err) => alert(err));
   };
 
@@ -73,9 +89,17 @@ function SelectedPost() {
       .catch((err) => alert(err));
   };
 
-  const getDate = (comment) => {
-    const date = new Date(comment.created_at).toLocaleDateString("en-US");
-    return date;
+  const getSetting = (comment) => {
+    api
+      .get(`/api/settings/username/?user_id=${comment.author}`)
+      .then((res) => res.data)
+      .then((data) => {
+        if (data.length != 0) {
+          const { name, bio, gender, sex, username, email } = data[0];
+          usernames[comment.author] = username;
+        }
+      })
+      .catch((err) => alert(err));
   };
 
   return (
@@ -163,7 +187,7 @@ function SelectedPost() {
                     <Avatar alt="Profile Picture" />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={comment.author}
+                    primary={usernames[comment.author]}
                     secondary={comment.content}
                   />
                   <IconButton
