@@ -9,7 +9,7 @@ import Navbar from "../components/Navbar";
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 const MODEL_NAME = "gemini-1.5-pro-latest";
-const API_KEY = "AIzaSyCjScbaLni695WrkNIFsJHC4BayQmIzn-4";
+const API_KEY = "AIzaSyBoe1UP9wQ5Nv_8PHh-bl3-lepBCdPIF40";
 
 
 function Meals() {

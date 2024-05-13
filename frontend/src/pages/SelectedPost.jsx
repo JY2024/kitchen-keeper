@@ -36,6 +36,7 @@ function SelectedPost() {
     ingredients: data.ingredients,
     instructions: data.instructions,
   };
+  console.log(post);
 
   useEffect(() => {
     getComments();
