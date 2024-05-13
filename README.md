@@ -14,7 +14,7 @@ Kitchen Keeper was made using React, Django, and Gemini API 1.5 Pro.
 Before trying to run the application, make sure to have these installed:
 - npm
 - python
-
+- node (if you want to run the test files)
 
 ## Installation
 
@@ -39,3 +39,7 @@ Running the server
 ## Configuration
 Note for graders: Put the .env file (containing the database information) in backend folder. We will email it to you.
 1. Need to use the .env file that will be emailed to the graders, which needs to be added to the root backend directory to properly interact with the Postgres data on ElephantSQL.  The .env file will contain the database hostname, port number to connect to, user, name, and password as environment variables.
+
+## Tests
+
+Note for graders: we put our unit test files for the pages in frontend/src/tests. You can run them by cd into that directory and running the command "node <test_file_name>"
