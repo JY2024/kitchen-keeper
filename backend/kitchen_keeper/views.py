@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer, PostAndCommentSerializer, RecipeSerializer, SettingSerializer
+from .serializers import UserSerializer, NoteSerializer, PostAndCommentSerializer, RecipeSerializer, SettingSerializer, FoodItemSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from.models import Note, Recipe, PostAndComment, Setting
+from.models import Note, Recipe, PostAndComment, Setting, FoodItem
 # import view sets from the REST framework
 from rest_framework import viewsets
  
@@ -131,3 +131,17 @@ class SettingDelete(generics.DestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Setting.objects.filter(author=user)
+
+class FoodItemCreate(generics.ListCreateAPIView):
+    serializer_class = FoodItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return FoodItem.objects.filter(author=user)
+    
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)

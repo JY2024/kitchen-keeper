@@ -1,7 +1,7 @@
 # import serializers from the REST framework
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note, PostAndComment, Setting, Recipe
+from .models import Note, PostAndComment, Setting, Recipe, FoodItem
  
 # import the todo data model
 from .models import KitchenKeeper
@@ -46,4 +46,10 @@ class SettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Setting
         fields = ["id", "name", "bio", "gender", "sex", "username", "email", "author", "created_at"]
+        extra_kwargs = {"author": {"read_only": True}}
+
+class FoodItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FoodItem
+        fields = ["id", "name", "group", "exp_date", "quantity", "unsplash_url", "desc", "author"]
         extra_kwargs = {"author": {"read_only": True}}

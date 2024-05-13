@@ -11,4 +11,5 @@ urlpatterns = [
     path("settings/", views.SettingCreate.as_view(), name="setting-create"),
     path("settings/username/", views.SettingGet.as_view(), name="setting-create"),    
     path("settings/delete/<int:pk>/", views.SettingDelete.as_view(), name="delete-setting"),
+    path("food_items/", views.FoodItemCreate.as_view(), name="food-item-list")
 ]
