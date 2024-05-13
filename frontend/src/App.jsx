@@ -11,6 +11,8 @@ import SocialPage from "./pages/SocialPage";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Setting from "./pages/Setting";
+import Navbar from "./components/Navbar";
+import Meals from "./pages/Meals";
 
 function Logout() {
   localStorage.clear();
@@ -30,6 +32,7 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
+              <Navbar />
               <Home />
             </ProtectedRoute>
           }
@@ -49,6 +52,7 @@ function App() {
         <Route path="*" element={<NotFound />}></Route>
         <Route path="/selectedPost" element={<SelectedPost />}></Route>
         <Route path="/social" element={<SocialPage />}></Route>
+        <Route path="/meals" element={<Meals />} />
       </Routes>
     </BrowserRouter>
   );

@@ -47,20 +47,38 @@ function SelectedPost() {
       .then((res) => res.data)
       .then((data) => {
         setComments(data);
-        data.map((comment) => {
-          api
-            .get(`/api/settings/username/?user_id=${comment.author}`)
-            .then((res) => res.data)
-            .then((data) => {
-              if (data.length != 0) {
-                const { name, bio, gender, sex, username, email } = data[0];
-                usernames[comment.author] = username;
-              }
-            })
-            .catch((err) => alert(err));
-        });
+        return Promise.all(
+          data.map((comment) =>
+            api
+              .get(`/api/settings/username/?user_id=${comment.author}`)
+              .then((res) => res.data)
+              .then((userData) => {
+                if (userData.length !== 0) {
+                  const { username } = userData[0];
+                  return { userId: comment.author, username };
+                }
+                return null;
+              })
+              .catch((err) => {
+                console.error("Error while fetching user data:", err);
+                return null;
+              })
+          )
+        );
       })
-      .catch((err) => alert(err));
+      .then((usernames) => {
+        const usernamesMap = {};
+        usernames.forEach((userData) => {
+          if (userData) {
+            usernamesMap[userData.userId] = userData.username;
+          }
+        });
+        setUsernames(usernamesMap);
+      })
+      .catch((err) => {
+        console.error("Error while fetching comments:", err);
+        alert("An error occurred while fetching comments");
+      });
   };
 
   const deleteComment = (id) => {
@@ -85,19 +103,6 @@ function SelectedPost() {
         if (res.status === 201) alert("Comment created!");
         else alert("Failed to make comment.");
         getComments();
-      })
-      .catch((err) => alert(err));
-  };
-
-  const getSetting = (comment) => {
-    api
-      .get(`/api/settings/username/?user_id=${comment.author}`)
-      .then((res) => res.data)
-      .then((data) => {
-        if (data.length != 0) {
-          const { name, bio, gender, sex, username, email } = data[0];
-          usernames[comment.author] = username;
-        }
       })
       .catch((err) => alert(err));
   };
