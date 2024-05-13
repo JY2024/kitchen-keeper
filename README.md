@@ -20,7 +20,7 @@ Before trying to run the application, make sure to have these installed:
 
 ## Installation
 
-1. Download the zipped release
+1. Download the code
 2. Unzip the folder
 3. Open your terminal
 4. (Optional) create a virtual environment
