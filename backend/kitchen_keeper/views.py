@@ -84,7 +84,7 @@ class RecipeCreate(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         return Recipe.objects
-    
+        
     def perform_create(self, serializer):
         if serializer.is_valid():
             serializer.save(author=self.request.user)
@@ -99,7 +99,6 @@ class RecipeDelete(generics.DestroyAPIView):
         user = self.request.user
         return Recipe.objects.filter(author=user)
     
-
 class SettingGet(generics.ListCreateAPIView):
     serializer_class = SettingSerializer
     permission_classes = [IsAuthenticated]
