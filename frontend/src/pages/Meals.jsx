@@ -8,7 +8,7 @@ import "../styles/Meals.css"
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 const MODEL_NAME = "gemini-1.5-pro-latest";
-const API_KEY = "AIzaSyCjScbaLni695WrkNIFsJHC4BayQmIzn-4";
+const API_KEY = "AIzaSyBoe1UP9wQ5Nv_8PHh-bl3-lepBCdPIF40";
 
 
 function Meals() {
@@ -104,7 +104,7 @@ function Meals() {
     });
 
     // const result = await chat.sendMessage(prompt);
-    const result = await chat.sendMessage("Hello" + prompt);
+    const result = await chat.sendMessage("Hello");
     const response = result.response;
     setIsRecipeVisible(true);
     const responseText = response.text();
