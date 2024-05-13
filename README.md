@@ -1,7 +1,7 @@
 # Kitchen Keeper
 CS520 Team 6
 
-[Link to video](https://drive.google.com/file/d/1-45DDkKqEg7haxKpCckJVV7dykiFO7vx/view?ts=6641b012)
+[Link to our demo video](https://drive.google.com/file/d/1-45DDkKqEg7haxKpCckJVV7dykiFO7vx/view?ts=6641b012)
 
 ## Introduction
 
